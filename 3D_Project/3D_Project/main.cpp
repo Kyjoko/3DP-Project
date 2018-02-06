@@ -96,7 +96,7 @@ int main(void)
 	if (!glfwInit())
 		return -1;
 
-	window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+	window = glfwCreateWindow(640, 480, "Hello", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
