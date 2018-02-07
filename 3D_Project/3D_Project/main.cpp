@@ -8,21 +8,48 @@
 #include <iostream>
 
 #include <glm.hpp>
+#include <gtc\matrix_transform.hpp>
 
 //Debug
 #include <imgui.h>
 #include <imgui_impl_glfw_gl3.h>
 
-GLuint glShaderProgram = 0;
+const int WIDTH = 640;
+const int HEIGHT = 480;
+
+glm::mat4 mat_world = glm::mat4(1.f);
+glm::mat4 mat_view = glm::mat4(1.f);
+glm::mat4 mat_projection = glm::mat4(1.f);
+
+GLuint gShaderProgram = 0;
 
 void render() {
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	mat_world = glm::rotate(mat_world, 0.01f, glm::vec3(0, 1, 0));
+
+	mat_view = glm::lookAt(
+		glm::vec3(0, 0, -2),
+		glm::vec3(0, 0, 0),
+		glm::vec3(0, 1, 0)
+	);
+	mat_projection = glm::perspective(3.141592f * 0.45f, (float)WIDTH / (float)HEIGHT, 0.1f, 20.f);
+
+	GLuint worldLoc = glGetUniformLocation(gShaderProgram, "mat_world");
+	glUniformMatrix4fv(worldLoc, 1, GL_FALSE, &mat_world[0][0]);
+
+	GLuint viewLoc = glGetUniformLocation(gShaderProgram, "mat_view");
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &mat_view[0][0]);
+
+	GLuint projLoc = glGetUniformLocation(gShaderProgram, "mat_projection");
+	glUniformMatrix4fv(projLoc, 1, GL_FALSE, &mat_projection[0][0]);
+
 
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 
 	ImGui_ImplGlfwGL3_NewFrame();
 
-	ImGui::Text("Hello fucking world! :)");
+	ImGui::Text("v1x:");
 
 
 	ImGui::Render();
@@ -45,7 +72,7 @@ void createTriangleData() {
 	unsigned int buffer;
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(TriangleVertex), vert, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(TriangleVertex), vert, GL_DYNAMIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), 0);
@@ -76,18 +103,18 @@ void setupShaders() {
 	glCompileShader(fs);
 
 
-	glShaderProgram = glCreateProgram();
+	gShaderProgram = glCreateProgram();
 
-	glAttachShader(glShaderProgram, vs);
-	glAttachShader(glShaderProgram, fs);
-	glLinkProgram(glShaderProgram);
+	glAttachShader(gShaderProgram, vs);
+	glAttachShader(gShaderProgram, fs);
+	glLinkProgram(gShaderProgram);
 
-	glDetachShader(glShaderProgram, vs);
-	glDetachShader(glShaderProgram, fs);
+	glDetachShader(gShaderProgram, vs);
+	glDetachShader(gShaderProgram, fs);
 	glDeleteShader(vs);
 	glDeleteShader(fs);
 
-	glUseProgram(glShaderProgram);
+	glUseProgram(gShaderProgram);
 }
 
 int main(void)
@@ -98,7 +125,7 @@ int main(void)
 	if (!glfwInit())
 		return -1;
 
-	window = glfwCreateWindow(640, 480, "Hello", NULL, NULL);
+	window = glfwCreateWindow(WIDTH, HEIGHT, "Hello", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
