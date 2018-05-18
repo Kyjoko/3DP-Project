@@ -10,6 +10,8 @@
 #include <glm.hpp>
 #include <gtc\matrix_transform.hpp>
 
+#include "Camera.h"
+
 //Debug
 #include <imgui.h>
 #include <imgui_impl_glfw_gl3.h>
@@ -18,23 +20,29 @@ const int WIDTH = 640;
 const int HEIGHT = 480;
 
 glm::mat4 mat_world = glm::mat4(1.f);
-glm::mat4 mat_view = glm::mat4(1.f);
+glm::mat4 mat_view = glm::lookAt(
+	glm::vec3(0, 0, -2), //position
+	glm::vec3(0, 0, -1), //look direction
+	glm::vec3(0, 1, 0) //up
+);
 glm::mat4 mat_projection = glm::mat4(1.f);
 
+GLFWwindow* window;
 GLuint gShaderProgram = 0;
 
+Camera* cam;
+
+float FOV = 45.f;
 void render() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	mat_world = glm::rotate(mat_world, 0.01f, glm::vec3(0, 1, 0));
+	cam->update();
 
-	mat_view = glm::lookAt(
-		glm::vec3(0, 0, -2),
-		glm::vec3(0, 0, 0),
-		glm::vec3(0, 1, 0)
-	);
-	mat_projection = glm::perspective(3.141592f * 0.45f, (float)WIDTH / (float)HEIGHT, 0.1f, 20.f);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+	mat_view = cam->getMatrix();
+
+	mat_projection = glm::perspective(glm::radians(FOV), (float)WIDTH / (float)HEIGHT, 0.1f, 20.f);
 	GLuint worldLoc = glGetUniformLocation(gShaderProgram, "mat_world");
 	glUniformMatrix4fv(worldLoc, 1, GL_FALSE, &mat_world[0][0]);
 
@@ -44,15 +52,15 @@ void render() {
 	GLuint projLoc = glGetUniformLocation(gShaderProgram, "mat_projection");
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, &mat_projection[0][0]);
 
-
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 
+	/*
 	ImGui_ImplGlfwGL3_NewFrame();
 
-	ImGui::Text("v1x:");
-
+	ImGui::SliderFloat("FOV", &FOV, 10.f, 180.f);
 
 	ImGui::Render();
+	*/
 }
 
 void createTriangleData() {
@@ -117,9 +125,20 @@ void setupShaders() {
 	glUseProgram(gShaderProgram);
 }
 
-int main(void)
-{
-	GLFWwindow* window;
+static void mouseMoveCallback(GLFWwindow* window, double x, double y) {
+
+	cam->handleMouseMovement(glm::vec2(x, y));
+}
+
+static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+
+	cam->handleKeyInput(key, action);
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	}
+}
+
+int main(void) {
 
 	//Initialize GLFW
 	if (!glfwInit())
@@ -133,7 +152,12 @@ int main(void)
 	}
 	
 	glfwMakeContextCurrent(window);
-	
+
+	//Mouse movement callback
+	glfwSetCursorPosCallback(window, mouseMoveCallback);
+	//Key callback
+	glfwSetKeyCallback(window, keyCallback);
+
 	//Initialize GLEW
 	glewInit();
 
@@ -141,10 +165,11 @@ int main(void)
 	ImGui_ImplGlfwGL3_Init(window, false);
 
 	std::cout << glGetString(GL_VERSION) << std::endl;
-
-	setupShaders();
 	
+	setupShaders();
 	createTriangleData();
+
+	cam = new Camera();
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -156,5 +181,6 @@ int main(void)
 	}
 
 	glfwTerminate();
+	delete cam;
 	return 0;
 }
