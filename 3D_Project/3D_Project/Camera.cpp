@@ -17,7 +17,6 @@ Camera::Camera() : UP(0.0f, 1.0f, 0.0f) {
 	keys[3] = { GLFW_KEY_D, false };
 	keys[4] = { GLFW_KEY_LEFT_SHIFT, false };
 	keys[5] = { GLFW_KEY_SPACE, false };
-
 }
 
 void Camera::update() {
