@@ -4,6 +4,7 @@
 #include <imgui.h>
 #include <imgui_impl_glfw_gl3.h>
 
+#include <iostream>
 
 Camera::Camera() : UP(0.0f, 1.0f, 0.0f) {
 	m_pos = glm::vec3(0, 0, -2);
@@ -45,8 +46,22 @@ void Camera::handleMouseMovement(glm::vec2 pos) {
 
 	m_mouseDelta = pos - m_oldMousePos;
 
-	m_viewDir = glm::mat3(glm::rotate(-m_mouseDelta.x * m_mouseSensitivity, UP)) * m_viewDir;
-	m_viewDir = glm::mat3(glm::rotate(m_mouseDelta.y * m_mouseSensitivity, glm::cross(UP, m_viewDir))) * m_viewDir;
+	glm::vec3 newView = glm::mat3(glm::rotate(m_mouseDelta.y * m_mouseSensitivity, glm::cross(UP, m_viewDir))) * m_viewDir;
+	newView = glm::mat3(glm::rotate(-m_mouseDelta.x * m_mouseSensitivity, UP)) * newView;
+
+	if (abs(newView.y) < 0.999f) {
+		//m_viewDir = glm::mat3(glm::rotate(-m_mouseDelta.x * m_mouseSensitivity, UP)) * m_viewDir;
+		//m_viewDir = glm::mat3(glm::rotate(m_mouseDelta.y * m_mouseSensitivity, glm::cross(UP, m_viewDir))) * m_viewDir;
+
+		m_viewDir = newView;
+	}
+	else {
+	
+		newView = glm::mat3(glm::rotate(-m_mouseDelta.x * m_mouseSensitivity, UP)) * m_viewDir;
+		m_viewDir = newView;
+	}
+
+	std::cout << m_viewDir.y << std::endl;
 
 	m_oldMousePos = pos;
 }
