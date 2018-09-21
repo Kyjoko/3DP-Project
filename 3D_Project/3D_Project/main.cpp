@@ -36,9 +36,15 @@ GLuint gShaderProgram = 0;
 
 Camera* cam;
 
+struct TriangleVertex {
+	glm::vec3 pos;
+	glm::vec2 uv;
+	glm::vec3 normal;
+};
+
 float FOV = 45.f;
 void render(unsigned int vertices) {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	cam->update();
 
@@ -56,7 +62,6 @@ void render(unsigned int vertices) {
 	GLuint projLoc = glGetUniformLocation(gShaderProgram, "mat_projection");
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, &mat_projection[0][0]);
 
-	//glDrawArrays(GL_TRIANGLE_STRIP, 0, vertices);
 	glDrawArrays(GL_TRIANGLES, 0, vertices);
 
 	/*
@@ -64,7 +69,9 @@ void render(unsigned int vertices) {
 
 	//ImGui::SliderFloat("FOV", &FOV, 10.f, 180.f);
 
-	ImGui::Button("Hello", ImVec2(50, 50));
+	//ImGui::Button("Hello", ImVec2(50, 50));
+
+	//ImGui::Text(std::to_string(cam->m_viewDir.y).c_str());
 
 	ImGui::Render();
 	*/
@@ -171,7 +178,7 @@ bool loadModel(const char* path,
 			
 		}
 	}
-
+	
 	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
 		unsigned int vertexIndex = vertexIndices[i];
 		glm::vec3 vertex = temp_vert[vertexIndex - 1];
@@ -190,6 +197,104 @@ bool loadModel(const char* path,
 
 }
 
+bool loadObjModel(const char* path, std::vector<TriangleVertex>& out_vertices, bool has_uv) {
+
+	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
+	std::vector<glm::vec3> temp_vert;
+	std::vector<glm::vec2> temp_uvs;
+	std::vector<glm::vec3> temp_normals;
+
+	FILE* objFile = fopen(path, "r");
+	if (objFile == NULL) return false;
+	while (true) {
+		char lineStart[256];
+		int res = fscanf(objFile, "%s", lineStart);
+		if (res == EOF) break;
+
+		if (strcmp(lineStart, "v") == 0) { //pos
+			glm::vec3 v;
+			fscanf(objFile, "%f %f %f\n", &v.x, &v.y, &v.z);
+			temp_vert.push_back(v);
+		}
+		else if (strcmp(lineStart, "vt") == 0) { //uvs
+			glm::vec2 u;
+			fscanf(objFile, "%f %f\n", &u.x, &u.y);
+			temp_uvs.push_back(u);
+		}
+		else if (strcmp(lineStart, "vn") == 0) { //normals
+			glm::vec3 n;
+			fscanf(objFile, "%f %f %f\n", &n.x, &n.y, &n.z);
+			temp_normals.push_back(n);
+		}
+		else if (strcmp(lineStart, "f") == 0) { //faces
+			unsigned int vertexIndex[4], uvIndex[4], normalIndex[4];
+			if (has_uv) {
+
+				int match = fscanf(objFile, "%d/%d/%d %d/%d/%d %d/%d/%d\n",
+					&vertexIndex[0],
+					&uvIndex[0],
+					&normalIndex[0],
+					&vertexIndex[1],
+					&uvIndex[1],
+					&normalIndex[1],
+					&vertexIndex[2],
+					&uvIndex[2],
+					&normalIndex[2]
+				);
+				if (match != 9) return false;
+
+				uvIndices.push_back(uvIndex[0]);
+				uvIndices.push_back(uvIndex[1]);
+				uvIndices.push_back(uvIndex[2]);
+
+			}
+			else
+			{
+				int match = fscanf(objFile, "%d//%d %d//%d %d//%d\n",
+					&vertexIndex[0],
+					&normalIndex[0],
+					&vertexIndex[1],
+					&normalIndex[1],
+					&vertexIndex[2],
+					&normalIndex[2]
+				);
+				if (match != 6) return false;
+
+			}
+
+			vertexIndices.push_back(vertexIndex[0]);
+			vertexIndices.push_back(vertexIndex[1]);
+			vertexIndices.push_back(vertexIndex[2]);
+
+			normalIndices.push_back(normalIndex[0]);
+			normalIndices.push_back(normalIndex[1]);
+			normalIndices.push_back(normalIndex[2]);
+
+		}
+	}
+
+	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
+		TriangleVertex tmp;
+		unsigned int vertexIndex = vertexIndices[i];
+		glm::vec3 vertex = temp_vert[vertexIndex - 1];
+		tmp.pos = vertex;
+
+		if(uvIndices.size() > i){
+			unsigned int uvIndex = uvIndices[i];
+			glm::vec2 uv = temp_uvs[uvIndex - 1];
+			tmp.uv = uv;
+		}
+		if (normalIndices.size() > i) {
+			unsigned int normalIndex = normalIndices[i];
+			glm::vec3 normal = temp_normals[normalIndex - 1];
+			tmp.normal = normal;
+		}
+
+		out_vertices.push_back(tmp);
+	}
+}
+
+
 void setupShaders() {
 	//Vertex Shader
 	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -202,6 +307,19 @@ void setupShaders() {
 	glShaderSource(vs, 1, &shaderTextPtr, nullptr);
 	glCompileShader(vs);
 
+	//Check for errors
+	int result;
+	glGetShaderiv(vs, GL_COMPILE_STATUS, &result);
+	if (result == GL_FALSE) {
+		int length;
+		glGetShaderiv(vs, GL_INFO_LOG_LENGTH, &length);
+		char message[256];
+		glGetShaderInfoLog(vs, length, &length, message);
+		std::cout << "Faild to compile vertex shader" << std::endl;
+		std::cout << message << std::endl;
+		glDeleteShader(vs);
+	}
+
 	//Fragment Shader
 	GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -213,6 +331,16 @@ void setupShaders() {
 	glShaderSource(fs, 1, &shaderTextPtr, nullptr);
 	glCompileShader(fs);
 
+	//Check for errors
+	glGetShaderiv(fs, GL_COMPILE_STATUS, &result);
+	if (result == GL_FALSE) {
+		int length;
+		glGetShaderiv(fs, GL_INFO_LOG_LENGTH, &length);
+		char message[256];
+		glGetShaderInfoLog(vs, length, &length, message);
+		std::cout << "Faild to compile fragment shader" << std::endl;
+		std::cout << message << std::endl;
+	}
 
 	gShaderProgram = glCreateProgram();
 
@@ -247,7 +375,7 @@ int main(void) {
 	if (!glfwInit())
 		return -1;
 
-	window = glfwCreateWindow(WIDTH, HEIGHT, "HelloWorld", NULL, NULL);
+	window = glfwCreateWindow(WIDTH, HEIGHT, "Hello World", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -281,6 +409,7 @@ int main(void) {
 
 
 	// Read our .obj file
+	/*
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec2> uvs;
 	std::vector<glm::vec3> normals;
@@ -296,9 +425,31 @@ int main(void) {
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
-	
+	*/
+
+	std::vector<TriangleVertex> vertices;
+	if (!loadObjModel("../Resources/Monkey.obj", vertices, false)) {
+		std::cout << "Could not load file" << std::endl;
+	}
+	std::cout << "Loaded " << vertices.size() << " vertices" << std::endl;
+	glBufferData(
+		GL_ARRAY_BUFFER,
+		vertices.size() * sizeof(TriangleVertex),
+		&vertices[0],
+		GL_DYNAMIC_DRAW);
+
+	//Pos
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), 0);
+	//UV
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*) sizeof(glm::vec3));
+	//Normal
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*) (sizeof(glm::vec3) + sizeof(glm::vec2)));
 
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 
 	cam = new Camera();
 
@@ -311,6 +462,7 @@ int main(void) {
 		render(vertices.size());
 	}
 
+	glDeleteProgram(gShaderProgram);
 	glfwTerminate();
 	delete cam;
 	return 0;
