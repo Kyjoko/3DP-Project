@@ -6,3 +6,5 @@
 
 3D_Project/Debug/
 3D_Project/3D_Project/Debug/
+*.db
+*.ipch
