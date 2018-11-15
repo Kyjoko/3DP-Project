@@ -1,16 +1,19 @@
 #pragma once
+#include "Transform.h"
 
+#include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <glm.hpp>
 #include <gtc\matrix_transform.hpp>
+#include <gtx\transform.hpp>
+
 
 #include <imgui.h>
 
 class Camera {
 private:
 	GLFWwindow * m_window;
-	glm::vec3 m_pos;
-	glm::vec3 m_viewDir;
+	Transform transform;
 	float m_mouseSensitivity;
 	float m_movementSpeed;
 	
@@ -22,19 +25,22 @@ private:
 		int keyCode;
 		bool pressed;
 	};
-
 	Key keys[6];
 
-public:
-	Camera();
+	unsigned int width, height;
+	float fov;
 
-	void update();
+public:
+	Camera(unsigned int screenWidth, unsigned int screenHeight, float fov);
+
+	void update(float dt);
 
 	void handleMouseMovement(glm::vec2 pos);
 	void handleKeyInput(int key, int action);
 
-	glm::mat4 getMatrix() const;
-	glm::vec3 getPos() const;
+	glm::mat4 getProjection() const;
+	Transform* getTransform() const;
 	
-
+	void setFov(float fov);
+	float getFov() const;
 };

@@ -1,0 +1,20 @@
+﻿  Camera.cpp
+  Display.cpp
+  Game.cpp
+Game.cpp(37): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+Game.cpp(39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  imgui.cpp
+  imgui_demo.cpp
+  imgui_draw.cpp
+  imgui_impl_glfw_gl3.cpp
+  main.cpp
+  Model.cpp
+  Object.cpp
+  PointLight.cpp
+  Shader.cpp
+  Transform.cpp
+  Generating code
+c:\users\julius\source\repos\3d_project\3d_project\model.cpp(120): warning C4715: 'Model::load': not all control paths return a value
+  All 752 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  3D_Project.vcxproj -> C:\Users\Julius\source\repos\3D_Project\Release\3D_Project.exe

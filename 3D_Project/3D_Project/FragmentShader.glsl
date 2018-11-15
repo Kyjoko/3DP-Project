@@ -16,5 +16,4 @@ void main(){
 	float d = dot(vertexNormal, lightDir);
 	d = max(d, 0);
 	color = (color + lightColor) * d * intensity;
-	color = color;
 }

@@ -1,0 +1,137 @@
+#include "Model.h"
+
+
+
+Model::Model() {
+
+}
+
+Model::Model(const char* path, bool hasUV) {
+	if (!load(path, hasUV)) {
+		std::cout << "Could not load model from " << path << std::endl;
+	}
+
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(
+		GL_ARRAY_BUFFER,
+		vertices.size() * sizeof(TriangleVertex),
+		&vertices[0],
+		GL_DYNAMIC_DRAW);
+
+}
+
+
+Model::~Model()
+{
+}
+
+bool Model::load(const char* path, bool has_uv) {
+
+	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
+	std::vector<glm::vec3> temp_vert;
+	std::vector<glm::vec2> temp_uvs;
+	std::vector<glm::vec3> temp_normals;
+
+	FILE* objFile = fopen(path, "r");
+	if (objFile == NULL) return false;
+	while (true) {
+		char lineStart[256];
+		int res = fscanf(objFile, "%s", lineStart);
+		if (res == EOF) break;
+
+		if (strcmp(lineStart, "v") == 0) { //pos
+			glm::vec3 v;
+			fscanf(objFile, "%f %f %f\n", &v.x, &v.y, &v.z);
+			temp_vert.push_back(v);
+		}
+		else if (strcmp(lineStart, "vt") == 0) { //uvs
+			glm::vec2 u;
+			fscanf(objFile, "%f %f\n", &u.x, &u.y);
+			temp_uvs.push_back(u);
+		}
+		else if (strcmp(lineStart, "vn") == 0) { //normals
+			glm::vec3 n;
+			fscanf(objFile, "%f %f %f\n", &n.x, &n.y, &n.z);
+			temp_normals.push_back(n);
+		}
+		else if (strcmp(lineStart, "f") == 0) { //faces
+			unsigned int vertexIndex[4], uvIndex[4], normalIndex[4];
+			if (has_uv) {
+
+				int match = fscanf(objFile, "%d/%d/%d %d/%d/%d %d/%d/%d\n",
+					&vertexIndex[0],
+					&uvIndex[0],
+					&normalIndex[0],
+					&vertexIndex[1],
+					&uvIndex[1],
+					&normalIndex[1],
+					&vertexIndex[2],
+					&uvIndex[2],
+					&normalIndex[2]
+				);
+				if (match != 9) return false;
+
+				uvIndices.push_back(uvIndex[0]);
+				uvIndices.push_back(uvIndex[1]);
+				uvIndices.push_back(uvIndex[2]);
+
+			}
+			else
+			{
+				int match = fscanf(objFile, "%d//%d %d//%d %d//%d\n",
+					&vertexIndex[0],
+					&normalIndex[0],
+					&vertexIndex[1],
+					&normalIndex[1],
+					&vertexIndex[2],
+					&normalIndex[2]
+				);
+				if (match != 6) return false;
+
+			}
+
+			vertexIndices.push_back(vertexIndex[0]);
+			vertexIndices.push_back(vertexIndex[1]);
+			vertexIndices.push_back(vertexIndex[2]);
+
+			normalIndices.push_back(normalIndex[0]);
+			normalIndices.push_back(normalIndex[1]);
+			normalIndices.push_back(normalIndex[2]);
+
+		}
+	}
+
+	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
+		TriangleVertex tmp;
+		unsigned int vertexIndex = vertexIndices[i];
+		glm::vec3 vertex = temp_vert[vertexIndex - 1];
+		tmp.pos = vertex;
+
+		if (uvIndices.size() > i) {
+			unsigned int uvIndex = uvIndices[i];
+			glm::vec2 uv = temp_uvs[uvIndex - 1];
+			tmp.uv = uv;
+		}
+		if (normalIndices.size() > i) {
+			unsigned int normalIndex = normalIndices[i];
+			glm::vec3 normal = temp_normals[normalIndex - 1];
+			tmp.normal = normal;
+		}
+
+		this->vertices.push_back(tmp);
+	}
+}
+
+void Model::draw() const {
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*) sizeof(glm::vec3));
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
+
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+}
