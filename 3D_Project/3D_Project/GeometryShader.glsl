@@ -14,22 +14,35 @@ out vec3 view_pos;
 layout(triangles) in;
 layout(triangle_strip, max_vertices = 3) out;
 
-void main(){
+void main() {
+
 	mat4 wvp = mat_projection * mat_view * mat_world;
-	
+	mat4 invView = inverse(mat_view);	//CameraWorld Matrix
+	vec3 camPos = vec3(invView[3][0], invView[3][1], invView[3][2]); //Position of camera in world
+	bool render = false;
+
 	view_pos = vec3(mat_world * vec4(mat_view[3][0], mat_view[3][1], mat_view[3][2], 0.0));
 
-	vec3 vertPosWorld = vec3(mat_world * mat_view * vec4(vertexPositionGs[0].xyz, 0.0));
-	vec3 vertNormWorld = normalize(vec3(mat_world * mat_view * vec4(vertexNormalGs[0].xyz, 0.0)));
-	vec3 view_dir = normalize(vec3(mat_view[0][2], mat_view[1][2], mat_view[2][2]));
+	//vec3 view_dir = normalize(vec3(mat_world * mat_view * mat_projection * vec4(vec3(mat_view[0][2], mat_view[1][2], mat_view[2][2]), 0.0)));
 	
-	if(dot(view_dir, normalize(vertNormWorld)) < 0){
-		for(int i = 0; i < 3; i++){
-			gl_Position = wvp * gl_in[i].gl_Position;
-			vertexNormal = vec3(mat_world * vec4(vertexNormalGs[i].xyz, 0.0));
-			vertexPosition = vec3(mat_world * vec4(vertexPositionGs[i].xyz, 1.0));
-			EmitVertex();
-		}
-		EndPrimitive();
+	vec3 vertPosWorld = vec3(mat_world * gl_in[0].gl_Position);
+	vec3 v_1 = vec3(mat_world * (vec4(gl_in[1].gl_Position) - vec4(gl_in[0].gl_Position)));
+	vec3 v_2 = vec3(mat_world * (vec4(gl_in[2].gl_Position) - vec4(gl_in[0].gl_Position)));
+	vec3 normal = cross(v_1, v_2); //Calculate normal of primitive
+
+	vec3 camToObj = normalize(vertPosWorld - camPos);
+
+if(dot(camToObj, normal) < 0) { //Check direction primitive is facing
+
+	for(int i = 0; i < 3; i++) {
+
+		gl_Position = wvp * gl_in[i].gl_Position;
+		vertexNormal = vec3(mat_world * vec4(vertexNormalGs[i].xyz, 0.0));
+		vertexPosition = vec3(mat_world * vec4(vertexPositionGs[i].xyz, 1.0));
+		EmitVertex();
+	}
+
+	EndPrimitive();
+
 	}
 }

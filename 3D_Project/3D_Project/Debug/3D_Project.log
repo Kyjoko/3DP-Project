@@ -1,6 +1,1 @@
-﻿  Game.cpp
-c:\users\julius\source\repos\3d_project\3d_project\game.cpp(47): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  Generating Code...
-  Skipping... (no relevant changes detected)
-  Display.cpp
-  3D_Project.vcxproj -> C:\Users\Julius\source\repos\3D_Project\Debug\3D_Project.exe
+﻿  3D_Project.vcxproj -> C:\Users\same8\Documents\GitHub\3DP-Project\3D_Project\Debug\3D_Project.exe
