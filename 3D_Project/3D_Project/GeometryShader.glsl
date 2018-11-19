@@ -19,10 +19,9 @@ void main() {
 	mat4 wvp = mat_projection * mat_view * mat_world;
 	mat4 invView = inverse(mat_view);	//CameraWorld Matrix
 	vec3 camPos = vec3(invView[3][0], invView[3][1], invView[3][2]); //Position of camera in world
-	bool render = false;
 
-	view_pos = vec3(mat_world * vec4(mat_view[3][0], mat_view[3][1], mat_view[3][2], 0.0));
-
+	//view_pos = vec3(mat_world * vec4(mat_view[3][0], mat_view[3][1], mat_view[3][2], 0.0));
+	view_pos = camPos;
 	//vec3 view_dir = normalize(vec3(mat_world * mat_view * mat_projection * vec4(vec3(mat_view[0][2], mat_view[1][2], mat_view[2][2]), 0.0)));
 	
 	vec3 vertPosWorld = vec3(mat_world * gl_in[0].gl_Position);
