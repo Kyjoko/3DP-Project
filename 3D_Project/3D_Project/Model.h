@@ -17,6 +17,7 @@ struct TriangleVertex {
 class Model {
 private:
 	GLuint buffer;
+	GLuint tex;
 public:
 	std::vector<TriangleVertex> vertices;
 	Model();

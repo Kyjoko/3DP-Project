@@ -6,9 +6,12 @@ layout(location = 5) uniform mat4 mat_projection;
 
 in vec3 vertexNormalGs[];
 in vec3 vertexPositionGs[];
+in vec2 uv_vs[];
 
 out vec3 vertexNormal;
 out vec3 vertexPosition;
+out vec2 uv_gs;
+
 out vec3 view_pos;
 
 layout(triangles) in;
@@ -38,6 +41,7 @@ if(dot(camToObj, normal) < 0) { //Check direction primitive is facing
 		gl_Position = wvp * gl_in[i].gl_Position;
 		vertexNormal = vec3(mat_world * vec4(vertexNormalGs[i].xyz, 0.0));
 		vertexPosition = vec3(mat_world * vec4(vertexPositionGs[i].xyz, 1.0));
+		uv_gs = uv_vs[i];
 		EmitVertex();
 	}
 

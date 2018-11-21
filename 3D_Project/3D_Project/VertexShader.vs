@@ -6,6 +6,7 @@ layout(location = 2) in vec4 normal;
 
 out vec3 vertexNormalGs;
 out vec3 vertexPositionGs;
+out vec2 uv_vs;
 
 void main(){
 
@@ -13,4 +14,5 @@ void main(){
 	
 	vertexNormalGs = normal.xyz;
 	vertexPositionGs = position.xyz;
+	uv_vs = uv;
 }

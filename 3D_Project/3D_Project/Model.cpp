@@ -11,6 +11,25 @@ Model::Model(const char* path, bool hasUV) {
 		std::cout << "Could not load model from " << path << std::endl;
 	}
 
+	glGenTextures(1, &tex); //Generate Texture object to tex
+	glBindTexture(GL_TEXTURE_2D, tex); //Bind texture for use
+
+	//Set Wraping
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	//Set Filtering
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	//Image pixels
+	float check[] = {
+		0.2f, 0.2f, 0.2f,	1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,	0.2f, 0.2f, 0.2f
+	};
+	//Load image
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_FLOAT, check);
+
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(

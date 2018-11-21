@@ -4,9 +4,9 @@ out vec4 outColor;
 
 in vec3 vertexNormal;
 in vec3 vertexPosition;
+in vec2 uv_gs;
 
 in vec3 view_pos;
-
 
 const int MAX_LIGHTS = 5;
 struct PointLight{
@@ -17,6 +17,8 @@ struct PointLight{
 
 uniform PointLight pointLights[MAX_LIGHTS];
 uniform int lightCount;
+
+uniform sampler2D tex;
 
 void main(){
 
@@ -50,5 +52,5 @@ void main(){
 		specular += specStrength * spec * pointLights[i].color;
 	}
 
-	outColor = (ambient + diffuse + specular) * materialColor;
+	outColor = texture(tex, uv_gs) * (ambient + diffuse + specular) * materialColor;
 }
