@@ -28,7 +28,7 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 	
 	box->getTransform()->translate(glm::vec3(4, 0, 2));
 
-	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, 2), glm::vec4(1, 0, 0, 1), 1 });
+	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, 2), glm::vec4(1, 0, 0, 1), 5 });
 	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, -2), glm::vec4(0, 1, 0, 1), 1 });
 	shaderHandler->updateLights();
 }

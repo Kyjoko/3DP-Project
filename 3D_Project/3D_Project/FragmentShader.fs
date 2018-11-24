@@ -39,7 +39,7 @@ void main(){
 		float d = dot(normal, lightDir);
 		d = max(d, 0.0);
 
-		diffuse += d * pointLights[i].color * (1/distance);
+		diffuse += d * pointLights[i].color * (pointLights[i].radius/distance);
 
 
 		//Specular
@@ -49,7 +49,7 @@ void main(){
 		vec3 reflectDir = reflect(-lightDir, normal);
 
 		float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
-		specular += specStrength * spec * pointLights[i].color;
+		specular += specStrength * spec * pointLights[i].color * pointLights[i].radius;
 	}
 
 	outColor = texture(tex, uv_gs) * (ambient + diffuse + specular) * materialColor;
