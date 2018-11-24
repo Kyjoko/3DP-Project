@@ -24,7 +24,7 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 	shaderHandler->use("Geo");
 	//Debug
 	monkey = new Object(shaderHandler, "../Resources/Monkey.obj", false);
-	box = new Object(shaderHandler, "../Resources/Box.obj", true);
+	box = new Object(shaderHandler, "../Resources/Box1.obj", true);
 	
 	box->getTransform()->translate(glm::vec3(4, 0, 2));
 
