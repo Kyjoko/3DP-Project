@@ -60,6 +60,9 @@
     <ClCompile Include="ShaderHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="FragmentShader.fs">
@@ -72,6 +75,12 @@
       <Filter>Source Files\Shaders</Filter>
     </None>
     <None Include="GeometryShader.glsl">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="ParticleFragmentShader.fs">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="ParticleVertexShader.vs">
       <Filter>Source Files\Shaders</Filter>
     </None>
   </ItemGroup>
@@ -119,6 +128,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ShaderHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

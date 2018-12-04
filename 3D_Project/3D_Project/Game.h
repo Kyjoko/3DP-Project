@@ -3,7 +3,7 @@
 #include "Camera.h"
 #include "Object.h"
 //#include "Shader.h"
-#include "ShaderHandler.h"
+#include "Particle.h"
 
 #include <iostream>
 #include <functional>
@@ -25,6 +25,8 @@ private:
 
 	Object* monkey;
 	Object* box;
+
+	Particle* particle;
 
 public:
 	

@@ -1,5 +1,5 @@
 #include "Model.h"
-
+#include "../SOIL/src/SOIL.h" //Simple Open Image Lib
 
 
 Model::Model() {
@@ -27,8 +27,20 @@ Model::Model(const char* path, bool hasUV) {
 		0.2f, 0.2f, 0.2f,	1.0f, 1.0f, 1.0f,
 		1.0f, 1.0f, 1.0f,	0.2f, 0.2f, 0.2f
 	};
-	//Load image
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_FLOAT, check);
+
+	//Inladdning av bild från fil till textur
+	int width, height;
+	unsigned char* image = SOIL_load_image("../Resources/companion.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	
+	if (hasUV == true)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	}
+	else
+	{
+		//Load image
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_FLOAT, check);
+	}
 
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
