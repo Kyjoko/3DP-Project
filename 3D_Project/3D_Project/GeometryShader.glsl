@@ -30,22 +30,20 @@ void main() {
 	vec3 vertPosWorld = vec3(mat_world * gl_in[0].gl_Position);
 	vec3 v_1 = vec3(mat_world * (vec4(gl_in[1].gl_Position) - vec4(gl_in[0].gl_Position)));
 	vec3 v_2 = vec3(mat_world * (vec4(gl_in[2].gl_Position) - vec4(gl_in[0].gl_Position)));
-	vec3 normal = cross(v_1, v_2); //Calculate normal of primitive
+	vec3 normal = normalize(cross(v_1, v_2)); //Calculate normal of primitive
 
 	vec3 camToObj = normalize(vertPosWorld - camPos);
+	if(dot(camToObj, normal) < 0) { //Check direction primitive is facing
 
-if(dot(camToObj, normal) < 0) { //Check direction primitive is facing
+		for(int i = 0; i < 3; i++) {
 
-	for(int i = 0; i < 3; i++) {
+			gl_Position = wvp * gl_in[i].gl_Position;
+			vertexNormal = vec3(mat_world * vec4(vertexNormalGs[i].xyz, 0.0));
+			vertexPosition = vec3(mat_world * vec4(vertexPositionGs[i].xyz, 1.0));
+			uv_gs = uv_vs[i];
+			EmitVertex();
+		}
 
-		gl_Position = wvp * gl_in[i].gl_Position;
-		vertexNormal = vec3(mat_world * vec4(vertexNormalGs[i].xyz, 0.0));
-		vertexPosition = vec3(mat_world * vec4(vertexPositionGs[i].xyz, 1.0));
-		uv_gs = uv_vs[i];
-		EmitVertex();
-	}
-
-	EndPrimitive();
-
+		EndPrimitive();
 	}
 }

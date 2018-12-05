@@ -8,6 +8,7 @@
 #include <vector>
 #include <array>
 #include <iostream>
+#include <string>
 
 struct TriangleVertex {
 	glm::vec3 pos;
@@ -32,6 +33,5 @@ public:
 	bool load(const char* path, bool has_uv);
 
 	void draw() const;
-	void drawQuad() const;
 };
 

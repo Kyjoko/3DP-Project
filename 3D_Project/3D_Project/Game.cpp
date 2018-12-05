@@ -44,7 +44,7 @@ Game::~Game() {
 	delete box;
 
 	//particle->cleanup();
-	//delete particle;
+	delete particle;
 }
 
 void Game::update(double dt) {
@@ -52,6 +52,8 @@ void Game::update(double dt) {
 	
 	cam->update(dt);
 	
+	//particle->getTransform()->translate(glm::vec3(-4, 0, 2));
+	//particle->getTransform()->rotate(glm::radians(45.0f) * dt, glm::vec3(0.0f, 1.0f, 0.0f));
 	monkey->getTransform()->rotate(glm::radians(45.0f) * dt, glm::vec3(0.0f, 1.0f, 0.0f));
 	//monkey->getTransform()->translate((monkey->getTransform()->getPosition() + monkey->getTransform()->getDir() * (float)dt));
 	//box->getTransform()->rotate(glm::radians(45.0f) * dt, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -59,7 +61,7 @@ void Game::update(double dt) {
 }
 
 void Game::render() {
-	shaderHandler->use("Geo");
+	//shaderHandler->use("Geo");
 	shaderHandler->updateView();
 	
 	box->draw();
@@ -81,7 +83,7 @@ void Game::render() {
 	*/
 
 	//shaderHandler->use("Particles");
-	particle->drawQuad();
+	particle->draw();
 }
 
 void Game::mouseMoveCallback(GLFWwindow* window, double x, double y) {

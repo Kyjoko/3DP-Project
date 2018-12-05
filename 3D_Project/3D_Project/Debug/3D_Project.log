@@ -1,3 +1,8 @@
-﻿  Model.cpp
-c:\users\same8\documents\github\3dp-project\3d_project\3d_project\model.cpp(193): warning C4715: 'Model::load': not all control paths return a value
+﻿  Display.cpp
+  Game.cpp
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(53): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(57): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  main.cpp
+  Object.cpp
+  Generating Code...
   3D_Project.vcxproj -> C:\Users\same8\Documents\GitHub\3DP-Project\3D_Project\Debug\3D_Project.exe

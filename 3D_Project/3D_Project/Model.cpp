@@ -4,15 +4,32 @@
 
 Model::Model() {
 
-	std::array<float, 12> verticesQuad = { -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f };
-	std::array<float, 12> uvCoord = { 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0 };
+	std::array<float, 8> verticesQuad = { -0.5f, 0.5f, 
+										   0.5f, 0.5f, 
+										   0.5f, -0.5f,
+										  -0.5f, -0.5f };
+
+	std::array<float, 8> uvCoord = { 0, 0, 
+									 0, 1, 
+									 1, 1,  
+									 1, 0 };
+
+	std::array<float, 6> indices = { 0,
+									 2, 
+									 4,  
+									 0, 
+									 4, 
+									 6 };
+
+	glm::vec3 v_1 = normalize(glm::vec3(glm::vec2(verticesQuad[2], verticesQuad[3]) - glm::vec2(verticesQuad[0], verticesQuad[1]),0.0f));
+	glm::vec3 v_2 = normalize(glm::vec3(glm::vec2(verticesQuad[4], verticesQuad[5]) - glm::vec2(verticesQuad[0], verticesQuad[1]),0.0f));
+	glm::vec3 normal = cross(v_1, v_2); //Calculate normal of primitive
 
 	TriangleVertex tmp;
-	for (int i = 0; i < 12; i+=2) {
-		tmp.pos = glm::vec3(verticesQuad[i], verticesQuad[i + 1], 0);
-		tmp.uv = glm::vec2(uvCoord[i], uvCoord[i + 1]);
-
-		std::cout << "i: " << i << " i++: " << i + 2 << std::endl;
+	for (int i = 0; i < indices.size(); i++) {
+		tmp.pos = glm::vec3(verticesQuad[indices[i]], verticesQuad[indices[i]+1], 0.0f);
+		tmp.uv = glm::vec2(uvCoord[indices[i]], uvCoord[indices[i]+1]);
+		tmp.normal = normal;
 
 		vertices.push_back(tmp);
 	}
@@ -29,8 +46,8 @@ Model::Model() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	int width, height;
-	unsigned char* image = SOIL_load_image("../Resources/companion.jpg", &width, &height, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	unsigned char* image2 = SOIL_load_image("../Resources/companion.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image2);
 	std::cout << "whatdifuck2" << std::endl;
  
 	glGenBuffers(1, &buffer);
@@ -93,6 +110,7 @@ Model::Model(const char* path, bool hasUV) {
 
 Model::~Model()
 {
+	glBindTexture(GL_TEXTURE_2D, tex);
 }
 
 bool Model::load(const char* path, bool has_uv) {
@@ -201,20 +219,6 @@ void Model::draw() const {
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*) sizeof(glm::vec3));
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
-
-	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-}
-
-void Model::drawQuad() const
-{
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), 0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*) sizeof(glm::vec3));
-	//glEnableVertexAttribArray(2);
-	//glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
 
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 }

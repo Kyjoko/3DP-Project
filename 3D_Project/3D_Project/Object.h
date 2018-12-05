@@ -18,7 +18,6 @@ public:
 	void loadModel(const char* path, bool hasUV);
 
 	void draw();
-	void drawQuad();
 
 	Transform* getTransform() const;
 };

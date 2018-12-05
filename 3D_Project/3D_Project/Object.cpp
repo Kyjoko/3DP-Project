@@ -30,12 +30,6 @@ void Object::draw() {
 	model->draw();
 }
 
-void Object::drawQuad()
-{
-	shader->setUniformMatrix4(transform.getMatrix(), "mat_world");
-	model->drawQuad();
-}
-
 Transform* Object::getTransform() const {
 	return (Transform*)&transform;
 }
