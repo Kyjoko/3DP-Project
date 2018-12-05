@@ -6,6 +6,7 @@
 #include <glm.hpp>
 
 #include <vector>
+#include <array>
 #include <iostream>
 
 struct TriangleVertex {
@@ -18,6 +19,10 @@ class Model {
 private:
 	GLuint buffer;
 	GLuint tex;
+
+	std::array<float, 8> verticesQuad;
+	std::array<float, 8> uvCoord;
+
 public:
 	std::vector<TriangleVertex> vertices;
 	Model();
@@ -27,5 +32,6 @@ public:
 	bool load(const char* path, bool has_uv);
 
 	void draw() const;
+	void drawQuad() const;
 };
 

@@ -4,6 +4,43 @@
 
 Model::Model() {
 
+	std::array<float, 12> verticesQuad = { -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f };
+	std::array<float, 12> uvCoord = { 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0 };
+
+	TriangleVertex tmp;
+	for (int i = 0; i < 12; i+=2) {
+		tmp.pos = glm::vec3(verticesQuad[i], verticesQuad[i + 1], 0);
+		tmp.uv = glm::vec2(uvCoord[i], uvCoord[i + 1]);
+
+		std::cout << "i: " << i << " i++: " << i + 2 << std::endl;
+
+		vertices.push_back(tmp);
+	}
+
+	glGenTextures(1, &tex); //Generate Texture object to tex
+	glBindTexture(GL_TEXTURE_2D, tex); //Bind texture for use
+
+	//Set Wraping
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	//Set Filtering
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	int width, height;
+	unsigned char* image = SOIL_load_image("../Resources/companion.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	std::cout << "whatdifuck2" << std::endl;
+ 
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(
+		GL_ARRAY_BUFFER,
+		vertices.size() * sizeof(TriangleVertex),
+		&vertices[0],
+		GL_DYNAMIC_DRAW);
+
 }
 
 Model::Model(const char* path, bool hasUV) {
@@ -32,14 +69,15 @@ Model::Model(const char* path, bool hasUV) {
 	int width, height;
 	unsigned char* image = SOIL_load_image("../Resources/companion.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 	
-	if (hasUV == true)
+	if (hasUV != true)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_FLOAT, check);
 	}
 	else
 	{
 		//Load image
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_FLOAT, check);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+		std::cout << "whatdifuck" << std::endl;
 	}
 
 	glGenBuffers(1, &buffer);
@@ -163,6 +201,20 @@ void Model::draw() const {
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*) sizeof(glm::vec3));
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
+
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+}
+
+void Model::drawQuad() const
+{
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*) sizeof(glm::vec3));
+	//glEnableVertexAttribArray(2);
+	//glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
 
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 }

@@ -22,17 +22,18 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 	shaderHandler->addShader(new Shader("VertexShader1.vs", "FragmentShader.fs"), "weirdGlow_shader");
 	shaderHandler->addShader(new Shader("VertexShader.vs", "GeometryShader.glsl", "FragmentShader.fs"), "Geo");
 	shaderHandler->use("Geo");
+
 	//Debug
 	monkey = new Object(shaderHandler, "../Resources/Monkey.obj", false);	//<--La till en extra bool i model konstruktorn
 	box = new Object(shaderHandler, "../Resources/Box1.obj", true);			//för att bara visa textur på lådan
-	
+	particle = new Object(shaderHandler);
+
 	box->getTransform()->translate(glm::vec3(4, 0, 2));
 
-	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, 2), glm::vec4(1, 0, 0, 1), 1 });	//<--Drog ner radius lite så man kan 
-	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, -2), glm::vec4(0, 1, 0, 1), 1 });	//se texturen utan att bli blind
+	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, 2), glm::vec4(1, 0, 0, 1), 1});	//<--Drog ner radius lite så man kan 
+	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, -2), glm::vec4(0, 1, 0, 1), 1.5});	//se texturen utan att bli blind
 	shaderHandler->updateLights();
 
-	Particle *particle = new Particle(shaderHandler);
 }
 
 Game::~Game() {
@@ -42,8 +43,8 @@ Game::~Game() {
 	delete monkey;
 	delete box;
 
-	particle->cleanup();
-	delete particle;
+	//particle->cleanup();
+	//delete particle;
 }
 
 void Game::update(double dt) {
@@ -66,7 +67,7 @@ void Game::render() {
 	//shaderHandler->use("weirdGlow_shader");
 	//shaderHandler->updateView();
 	
-	monkey->draw();
+	//monkey->draw();
 	/*
 	ImGui_ImplGlfwGL3_NewFrame();
 
@@ -79,8 +80,8 @@ void Game::render() {
 	ImGui::Render();
 	*/
 
-	shaderHandler->use("Particles");
-	particle->drawParticle(1, 1, 1);
+	//shaderHandler->use("Particles");
+	particle->drawQuad();
 }
 
 void Game::mouseMoveCallback(GLFWwindow* window, double x, double y) {

@@ -5,6 +5,11 @@ Object::Object() {
 }
 
 
+Object::Object(ShaderHandler* shader) {
+	this->shader = shader;
+	model = new Model();
+}
+
 Object::Object(ShaderHandler* shader, const char * path, bool hasUV) {
 	this->shader = shader;
 	model = new Model(path, hasUV);
@@ -23,6 +28,12 @@ void Object::loadModel(const char * path, bool hasUV) {
 void Object::draw() {
 	shader->setUniformMatrix4(transform.getMatrix(), "mat_world");
 	model->draw();
+}
+
+void Object::drawQuad()
+{
+	shader->setUniformMatrix4(transform.getMatrix(), "mat_world");
+	model->drawQuad();
 }
 
 Transform* Object::getTransform() const {

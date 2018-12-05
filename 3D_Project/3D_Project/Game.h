@@ -26,7 +26,7 @@ private:
 	Object* monkey;
 	Object* box;
 
-	Particle* particle;
+	Object* particle;
 
 public:
 	

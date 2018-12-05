@@ -11,12 +11,14 @@ private:
 	ShaderHandler * shader;
 public:
 	Object();
+	Object(ShaderHandler *shader);
 	Object(ShaderHandler *shader, const char* path, bool hasUV);
 	virtual ~Object();
 
 	void loadModel(const char* path, bool hasUV);
 
 	void draw();
+	void drawQuad();
 
 	Transform* getTransform() const;
 };
