@@ -1,8 +1,8 @@
-﻿  Display.cpp
-  Game.cpp
-c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(53): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(57): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  main.cpp
-  Object.cpp
-  Generating Code...
+﻿  Game.cpp
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(48): warning C4018: '<': signed/unsigned mismatch
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(63): warning C4018: '<': signed/unsigned mismatch
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(64): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(72): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(74): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(107): warning C4018: '<': signed/unsigned mismatch
   3D_Project.vcxproj -> C:\Users\same8\Documents\GitHub\3DP-Project\3D_Project\Debug\3D_Project.exe

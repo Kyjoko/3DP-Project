@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <functional>
-
+#include <queue>
 #include <vector>
 
 //#include <glm.hpp>
@@ -26,7 +26,9 @@ private:
 	Object* monkey;
 	Object* box;
 
-	Object* particle;
+	//Object* particle;
+	std::vector<Object*> particleList;
+	float timeElapsed;
 
 public:
 	

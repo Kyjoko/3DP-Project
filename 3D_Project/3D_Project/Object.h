@@ -9,15 +9,25 @@ private:
 	Transform transform;
 
 	ShaderHandler * shader;
+
+	float TTL; //Time To Live;
+	float size;
+	float elapsedTime;
+
 public:
 	Object();
-	Object(ShaderHandler *shader);
+	Object(ShaderHandler *shader, float TTL, glm::vec3 pos);
 	Object(ShaderHandler *shader, const char* path, bool hasUV);
 	virtual ~Object();
 
 	void loadModel(const char* path, bool hasUV);
 
+	bool particleUpdate(Object* particle, float dt); //Updates Billboard Particle Object Variables
 	void draw();
+
+	glm::vec3 change;
+	glm::vec3 position;
+	glm::vec3 speed;
 
 	Transform* getTransform() const;
 };

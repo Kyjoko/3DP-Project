@@ -9,12 +9,12 @@ Model::Model() {
 										   0.5f, -0.5f,
 										  -0.5f, -0.5f };
 
-	std::array<float, 8> uvCoord = { 0, 0, 
+	std::array<float, 8> uvCoordQuad = { 0, 0, 
 									 0, 1, 
 									 1, 1,  
 									 1, 0 };
 
-	std::array<float, 6> indices = { 0,
+	std::array<float, 6> indicesQuad = { 0,
 									 2, 
 									 4,  
 									 0, 
@@ -26,9 +26,9 @@ Model::Model() {
 	glm::vec3 normal = cross(v_1, v_2); //Calculate normal of primitive
 
 	TriangleVertex tmp;
-	for (int i = 0; i < indices.size(); i++) {
-		tmp.pos = glm::vec3(verticesQuad[indices[i]], verticesQuad[indices[i]+1], 0.0f);
-		tmp.uv = glm::vec2(uvCoord[indices[i]], uvCoord[indices[i]+1]);
+	for (int i = 0; i < indicesQuad.size(); i++) {
+		tmp.pos = glm::vec3(verticesQuad[indicesQuad[i]], verticesQuad[indicesQuad[i]+1], 0.0f);
+		tmp.uv = glm::vec2(uvCoordQuad[indicesQuad[i]], uvCoordQuad[indicesQuad[i]+1]);
 		tmp.normal = normal;
 
 		vertices.push_back(tmp);
@@ -46,9 +46,8 @@ Model::Model() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	int width, height;
-	unsigned char* image2 = SOIL_load_image("../Resources/companion.jpg", &width, &height, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image2);
-	std::cout << "whatdifuck2" << std::endl;
+	unsigned char* image = SOIL_load_image("../Resources/companion.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
  
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -94,7 +93,6 @@ Model::Model(const char* path, bool hasUV) {
 	{
 		//Load image
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-		std::cout << "whatdifuck" << std::endl;
 	}
 
 	glGenBuffers(1, &buffer);

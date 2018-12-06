@@ -21,11 +21,9 @@ private:
 	GLuint buffer;
 	GLuint tex;
 
-	std::array<float, 8> verticesQuad;
-	std::array<float, 8> uvCoord;
-
 public:
 	std::vector<TriangleVertex> vertices;
+	float timeToLive; //Determines when to stop drawing
 	Model();
 	Model(const char* path, bool hasUV);
 	virtual ~Model();
