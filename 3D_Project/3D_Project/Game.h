@@ -9,6 +9,8 @@
 #include <functional>
 #include <queue>
 #include <vector>
+#include <stdlib.h>
+#include <time.h>
 
 //#include <glm.hpp>
 
@@ -31,7 +33,8 @@ private:
 	float timeElapsed;
 
 public:
-	
+	int particlePos;
+
 	Game(GLFWwindow* window, unsigned int width, unsigned int height);
 	virtual ~Game();
 	

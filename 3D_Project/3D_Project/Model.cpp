@@ -102,13 +102,12 @@ Model::Model(const char* path, bool hasUV) {
 		vertices.size() * sizeof(TriangleVertex),
 		&vertices[0],
 		GL_DYNAMIC_DRAW);
-
 }
 
 
 Model::~Model()
 {
-	glBindTexture(GL_TEXTURE_2D, tex);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 bool Model::load(const char* path, bool has_uv) {

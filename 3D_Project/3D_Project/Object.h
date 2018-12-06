@@ -12,7 +12,7 @@ private:
 
 	float TTL; //Time To Live;
 	float size;
-	float elapsedTime;
+	
 
 public:
 	Object();
@@ -28,6 +28,8 @@ public:
 	glm::vec3 change;
 	glm::vec3 position;
 	glm::vec3 speed;
+
+	float elapsedTime;
 
 	Transform* getTransform() const;
 };

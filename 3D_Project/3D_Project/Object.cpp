@@ -20,7 +20,9 @@ Object::Object(ShaderHandler* shader, const char * path, bool hasUV) {
 }
 
 Object::~Object() {
-	if(model != nullptr) delete model;
+	if (model != nullptr) {
+		delete model;
+	}
 }
 
 void Object::loadModel(const char * path, bool hasUV) {
@@ -29,12 +31,12 @@ void Object::loadModel(const char * path, bool hasUV) {
 	model = new Model(path, hasUV);
 }
 
-bool Object::particleUpdate(Object * particle, float dt)
+bool Object::particleUpdate(Object* particle, float dt)
 {
 	this->speed.y += 5 * dt; //Gravity
 	this->change = this->speed + this->position;
-	elapsedTime += dt;
-	std::cout << "y: " << this->speed.y << std::endl;
+	this->elapsedTime += dt;
+	//std::cout << "y: " << this->speed.y << std::endl;
 	//std::cout << "Elapsed: " << elapsedTime << ", dt: " << dt << elapsedTime << std::endl;
 	return elapsedTime < this->TTL;
 }

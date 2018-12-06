@@ -5,6 +5,9 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 	this->height = height;
 	this->window = window;
 	this->timeElapsed = 0;
+	std::srand(time(NULL));
+
+	this->particlePos = -10;
 
 	//Initialize GLEW
 	glewInit();
@@ -25,14 +28,12 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 	shaderHandler->use("Geo");
 
 	//Debug
-	monkey = new Object(shaderHandler, "../Resources/Monkey.obj", false);	//<--La till en extra bool i model konstruktorn
-	box = new Object(shaderHandler, "../Resources/Box1.obj", true);			//för att bara visa textur på lådan
-	
-	//particleList.insert(particleList.begin(), new Object(shaderHandler, 100000));
+	monkey = new Object(shaderHandler, "../Resources/Monkey.obj", false);
+	box = new Object(shaderHandler, "../Resources/Box1.obj", true);
 
 	box->getTransform()->translate(glm::vec3(4, 0, 2));
 
-	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, 2), glm::vec4(1, 0, 0, 1), 1});	//<--Drog ner radius lite så man kan 
+	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, 2), glm::vec4(1, 0, 0, 1), 1});		//<--Drog ner radius lite så man kan 
 	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, -2), glm::vec4(0, 1, 0, 1), 1.5});	//se texturen utan att bli blind
 	shaderHandler->updateLights();
 
@@ -48,21 +49,33 @@ Game::~Game() {
 	for (int i = 0; i < particleList.size(); i++) {
 		delete particleList[i];
 	}
+	std::cout << "game D" << std::endl;
 }
 
 void Game::update(double dt) {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 
-	if (particleList.size() < 32 && timeElapsed > 0.25)
+	if (particleList.size() < 128 && timeElapsed > 0.2)
 	{
-		particleList.insert(particleList.begin(), new Object(shaderHandler, 5, glm::vec3(0.0f, -10.0f, 0.0f)));
+		if (this->particlePos > 11)
+		{
+			particlePos = -10;
+		}
+
+		particleList.insert(particleList.begin(), new Object(shaderHandler, 5, glm::vec3(this->particlePos, -15, 0.0f)));
 		//particleList.front()->getTransform()->translate(particleList.front()->position);
+		
+		particlePos += 2;
 		timeElapsed = 0;
 	}
 	for (int i = 0; i < particleList.size(); i++) {
 		if (particleList[i]->particleUpdate(particleList[i], dt) == false) {
-			particleList.pop_back();
+			particleList[i]->position.y = -15;
+			particleList[i]->speed.y = 0;
+			particleList[i]->elapsedTime = 0;
+
+			//particleList.erase(particleList.begin()+particleList.size()-1);
 		}
 		else {
 			particleList[i]->getTransform()->translate(particleList[i]->change);
@@ -77,7 +90,6 @@ void Game::update(double dt) {
 	//monkey->getTransform()->rotate(glm::radians(45.0f) * dt, glm::vec3(0.0f, 1.0f, 0.0f));
 	//monkey->getTransform()->translate((monkey->getTransform()->getPosition() + monkey->getTransform()->getDir() * (float)dt));
 	//box->getTransform()->rotate(glm::radians(45.0f) * dt, glm::vec3(0.0f, 1.0f, 0.0f));
-
 }
 
 void Game::render() {
