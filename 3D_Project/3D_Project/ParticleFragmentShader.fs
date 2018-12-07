@@ -1,17 +1,11 @@
 #version 440
 
-// Interpolated values from the vertex shaders
-in vec2 UV;
+out vec4 outColor;
 
-// Ouput data
-out vec4 color;
+in vec2 uv_gs;
 
-// Values that stay constant for the whole mesh.
-uniform sampler2D textureSampler;
+uniform sampler2D tex;
 
 void main(){
-
-	color = texture( textureSampler, UV );
-	
-	
+	outColor = texture(tex, uv_gs);
 }

@@ -33,7 +33,7 @@ void Particle::setTexture()
 	glGenBuffers(1, &UVBufferID);
 
 	//Shaders
-	shaderHandler->addShader(new Shader("ParticleVertexShader.vs", "ParticleFragmentShader.fs"), "Particles");
+	
 	shaderHandler->use("Particles");
 
 	//Uniforms

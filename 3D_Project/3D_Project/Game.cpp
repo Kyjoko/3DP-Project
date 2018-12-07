@@ -20,6 +20,10 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 	cam = new Camera(width, height, 45.f);
 
 	shaderHandler = new ShaderHandler(cam);
+
+	shaderHandler->addShader(new Shader("ParticleVertexShader.vs", "ParticleFragmentShader.fs"), "Particles");
+	shaderHandler->use("Particles");
+
 	shaderHandler->addShader(new Shader("VertexShader.vs", "FragmentShader.fs"), "default_shader");
 	shaderHandler->use("default_shader");
 
@@ -49,14 +53,13 @@ Game::~Game() {
 	for (int i = 0; i < particleList.size(); i++) {
 		delete particleList[i];
 	}
-	std::cout << "game D" << std::endl;
 }
 
 void Game::update(double dt) {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 
-	if (particleList.size() < 128 && timeElapsed > 0.2)
+	if (particleList.size() < 117 && timeElapsed > 0.05)
 	{
 		if (this->particlePos > 11)
 		{
@@ -93,7 +96,7 @@ void Game::update(double dt) {
 }
 
 void Game::render() {
-	//shaderHandler->use("Geo");
+	shaderHandler->use("Geo");
 	shaderHandler->updateView();
 	
 	box->draw();
@@ -114,7 +117,8 @@ void Game::render() {
 	ImGui::Render();
 	*/
 
-	//shaderHandler->use("Particles");
+	shaderHandler->use("Particles");
+	shaderHandler->updateView();
 
 	for (int i = 0; i < particleList.size(); i++) {
 		particleList[i]->draw();

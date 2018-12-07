@@ -1,20 +1,26 @@
 #version 440
 
-// Input vertex data, different for all executions of this shader.
-layout(location = 6) in vec2 vertexPosition_screenspace;
-layout(location = 7) in vec2 vertexUV;
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec2 uv;
+layout(location = 2) in vec3 normal;
 
-// Output data ; will be interpolated for each fragment.
-out vec2 UV;
+layout(location = 3) uniform mat4 mat_world;
+layout(location = 4) uniform mat4 mat_view;
+layout(location = 5) uniform mat4 mat_projection;
+
+out vec2 uv_vs;
+out vec3 view_pos;
 
 void main(){
 
-	// Output position of the vertex, in clip space
-	// map [0..800][0..600] to [-1..1][-1..1]
-	vec2 vertexPosition_homoneneousspace = vertexPosition_screenspace - vec2(400,300); // [0..800][0..600] -> [-400..400][-300..300]
-	vertexPosition_homoneneousspace /= vec2(400,300);
-	gl_Position =  vec4(vertexPosition_homoneneousspace,0,1);
+	mat4 wvp = mat_projection * mat_view * mat_world;
+	mat4 invView = inverse(mat_view);	//CameraWorld Matrix
+	vec3 camPos = vec3(invView[3][0], invView[3][1], invView[3][2]); 
+	view_pos = camPos;
+
+	gl_Position = wvp * vec4(position, 1.0f);
 	
-	// UV of the vertex. No special space for this one.
-	UV = vertexUV;
+	//vertexNormal = vec3(mat_world * vec4(normal, 0.0));
+	//vertexPosition = vec3(mat_world * vec4(position, 1.0));
+	uv_vs = uv;
 }
