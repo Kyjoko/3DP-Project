@@ -1,5 +1,4 @@
-﻿  Display.cpp
-  Game.cpp
+﻿  Game.cpp
 c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(8): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(53): warning C4018: '<': signed/unsigned mismatch
 c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(75): warning C4018: '<': signed/unsigned mismatch
@@ -7,20 +6,4 @@ c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(76): 
 c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(88): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(90): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
 c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(122): warning C4018: '<': signed/unsigned mismatch
-  Object.cpp
-  Particle.cpp
-c:\users\same8\documents\github\3dp-project\3d_project\3d_project\particle.cpp(68): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-  ParticleHandler.cpp
-c:\users\same8\documents\github\3dp-project\3d_project\3d_project\particlehandler.cpp(25): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-  ShaderHandler.cpp
-  main.cpp
-  Generating Code...
   3D_Project.vcxproj -> C:\Users\same8\Documents\GitHub\3DP-Project\3D_Project\Debug\3D_Project.exe

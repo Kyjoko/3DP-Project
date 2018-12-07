@@ -59,7 +59,7 @@ void Game::update(double dt) {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 
-	if (particleList.size() < 320 && timeElapsed > static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 5.0)))
+	if (particleList.size() < 2048 && timeElapsed > static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 1.0)))
 	{
 		if (this->particlePos == 14)
 		{

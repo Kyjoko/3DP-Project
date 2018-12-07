@@ -31,5 +31,6 @@ public:
 	bool load(const char* path, bool has_uv);
 
 	void draw() const;
+	void drawParticle() const;
 };
 

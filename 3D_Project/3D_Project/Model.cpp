@@ -21,33 +21,33 @@ Model::Model() {
 									 4, 
 									 6 };
 
-	glm::vec3 v_1 = normalize(glm::vec3(glm::vec2(verticesQuad[2], verticesQuad[3]) - glm::vec2(verticesQuad[0], verticesQuad[1]),0.0f));
-	glm::vec3 v_2 = normalize(glm::vec3(glm::vec2(verticesQuad[4], verticesQuad[5]) - glm::vec2(verticesQuad[0], verticesQuad[1]),0.0f));
-	glm::vec3 normal = cross(v_1, v_2); //Calculate normal of primitive
+	//glm::vec3 v_1 = normalize(glm::vec3(glm::vec2(verticesQuad[2], verticesQuad[3]) - glm::vec2(verticesQuad[0], verticesQuad[1]),0.0f));
+	//glm::vec3 v_2 = normalize(glm::vec3(glm::vec2(verticesQuad[4], verticesQuad[5]) - glm::vec2(verticesQuad[0], verticesQuad[1]),0.0f));
+	//glm::vec3 normal = cross(v_1, v_2); //Calculate normal of primitive
 
 	TriangleVertex tmp;
 	for (int i = 0; i < indicesQuad.size(); i++) {
 		tmp.pos = glm::vec3(verticesQuad[indicesQuad[i]], verticesQuad[indicesQuad[i]+1], 0.0f);
 		tmp.uv = glm::vec2(uvCoordQuad[indicesQuad[i]], uvCoordQuad[indicesQuad[i]+1]);
-		tmp.normal = normal;
+		//tmp.normal = normal;
 
 		vertices.push_back(tmp);
 	}
 
-	glGenTextures(1, &tex); //Generate Texture object to tex
-	glBindTexture(GL_TEXTURE_2D, tex); //Bind texture for use
+	//glGenTextures(1, &tex); //Generate Texture object to tex
+	//glBindTexture(GL_TEXTURE_2D, tex); //Bind texture for use
 
 	//Set Wraping
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	//Set Filtering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	int width, height;
-	unsigned char* image = SOIL_load_image("../Resources/companion.jpg", &width, &height, 0, SOIL_LOAD_RGB);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	//int width, height;
+	//unsigned char* image = SOIL_load_image("../Resources/companion.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
  
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -216,6 +216,17 @@ void Model::draw() const {
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*) sizeof(glm::vec3));
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
+
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+}
+
+void Model::drawParticle() const {
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*) sizeof(glm::vec3));
 
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 }
