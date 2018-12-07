@@ -34,8 +34,9 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 	//Debug
 	monkey = new Object(shaderHandler, "../Resources/Monkey.obj", false);
 	box = new Object(shaderHandler, "../Resources/Box1.obj", true);
-
 	box->getTransform()->translate(glm::vec3(4, 0, 2));
+
+	terrain = new Model(glm::vec3(-7, -2, -7), 10, 10, 0.5f);
 
 	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, 2), glm::vec4(1, 0, 0, 1), 1});		//<--Drog ner radius lite så man kan 
 	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, -2), glm::vec4(0, 1, 0, 1), 1.5});	//se texturen utan att bli blind
@@ -49,6 +50,7 @@ Game::~Game() {
 
 	delete monkey;
 	delete box;
+	delete terrain;
 
 	for (int i = 0; i < particleList.size(); i++) {
 		delete particleList[i];
@@ -73,7 +75,7 @@ void Game::update(double dt) {
 		timeElapsed = 0;
 	}
 	for (int i = 0; i < particleList.size(); i++) {
-		if (particleList[i]->particleUpdate(particleList[i], dt) == false) {
+		if (particleList[i]->particleUpdate(dt) == false) {
 			particleList[i]->position.y = -15;
 			particleList[i]->speed.y = 0;
 			particleList[i]->elapsedTime = 0;
@@ -99,12 +101,16 @@ void Game::render() {
 	shaderHandler->use("Geo");
 	shaderHandler->updateView();
 	
+	terrain->draw();
+
 	box->draw();
 
 	//shaderHandler->use("weirdGlow_shader");
 	//shaderHandler->updateView();
 	
 	monkey->draw();
+	
+	
 	/*
 	ImGui_ImplGlfwGL3_NewFrame();
 

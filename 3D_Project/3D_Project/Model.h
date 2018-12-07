@@ -25,6 +25,7 @@ public:
 	std::vector<TriangleVertex> vertices;
 	float timeToLive; //Determines when to stop drawing
 	Model();
+	Model(glm::vec3 pos, int width, int height, float tileSize); //Terrain
 	Model(const char* path, bool hasUV);
 	virtual ~Model();
 

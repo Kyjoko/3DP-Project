@@ -1,7 +1,6 @@
 #include "Model.h"
 #include "../SOIL/src/SOIL.h" //Simple Open Image Lib
 
-
 Model::Model() {
 
 	std::array<float, 8> verticesQuad = { -0.25f, 0.25f, 
@@ -57,6 +56,54 @@ Model::Model() {
 		&vertices[0],
 		GL_DYNAMIC_DRAW);
 
+}
+
+Model::Model(glm::vec3 pos,int width, int height, float tileSize) {
+
+	//Load heightmap
+	int imageWidth, imageHeight;
+	unsigned char* image = SOIL_load_image("../Resources/200px-Heightmap.png", &imageWidth, &imageHeight, 0, SOIL_LOAD_RGB);
+	
+	/*
+	for (int i = 0; i < imageHeight; i++) {
+		for (int j = 0; j < imageWidth; j++) {
+
+			int value = image[(i*imageWidth + j) * 4];
+			std::cout << value << std::endl;
+		}
+	}
+	*/
+
+	//Make terrain
+	float y = pos.y;
+	for (float tileZ = pos.x; tileZ < pos.x + height; tileZ += tileSize) {
+		for (float tileX = pos.z; tileX < pos.z + width; tileX += tileSize) {
+			//y += (image[(int)((tileZ - pos.z) * imageWidth + tileX - pos.x) * 4]) / 255 * 5;
+
+			TriangleVertex v1{ glm::vec3(tileX, y, tileZ), glm::vec2(0, 0), glm::vec3(0, 1, 0) };
+			this->vertices.push_back(v1);
+			v1.pos = glm::vec3(tileX, y, tileZ + tileSize);
+			this->vertices.push_back(v1);
+			v1.pos = glm::vec3(tileX + tileSize, y, tileZ + tileSize);
+			this->vertices.push_back(v1);
+
+			v1.pos = glm::vec3(tileX, y, tileZ);
+			this->vertices.push_back(v1);
+			v1.pos = glm::vec3(tileX + tileSize, y, tileZ + tileSize);
+			this->vertices.push_back(v1);
+			v1.pos = glm::vec3(tileX + tileSize, y, tileZ);
+			this->vertices.push_back(v1);
+		}
+	}
+
+
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(
+		GL_ARRAY_BUFFER,
+		vertices.size() * sizeof(TriangleVertex),
+		&vertices[0],
+		GL_STATIC_DRAW);
 }
 
 Model::Model(const char* path, bool hasUV) {

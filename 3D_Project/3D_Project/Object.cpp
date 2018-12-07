@@ -31,7 +31,7 @@ void Object::loadModel(const char * path, bool hasUV) {
 	model = new Model(path, hasUV);
 }
 
-bool Object::particleUpdate(Object* particle, float dt)
+bool Object::particleUpdate(float dt)
 {
 	this->speed.y += 9 * dt; //Gravity
 	this->change = this->speed + this->position;

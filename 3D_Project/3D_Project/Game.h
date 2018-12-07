@@ -28,6 +28,8 @@ private:
 	Object* monkey;
 	Object* box;
 
+	Model* terrain;
+
 	//Object* particle;
 	std::vector<Object*> particleList;
 	float timeElapsed;

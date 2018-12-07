@@ -22,7 +22,7 @@ public:
 
 	void loadModel(const char* path, bool hasUV);
 
-	bool particleUpdate(Object* particle, float dt); //Updates Billboard Particle Object Variables
+	bool particleUpdate(float dt); //Updates Billboard Particle Object Variables
 	void draw();
 
 	glm::vec3 change;
