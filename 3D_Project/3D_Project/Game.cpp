@@ -59,14 +59,14 @@ void Game::update(double dt) {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 
-	if (particleList.size() < 117 && timeElapsed > 0.05)
+	if (particleList.size() < 320 && timeElapsed > static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 5.0)))
 	{
-		if (this->particlePos > 11)
+		if (this->particlePos == 14)
 		{
 			particlePos = -10;
 		}
 
-		particleList.insert(particleList.begin(), new Object(shaderHandler, 5, glm::vec3(this->particlePos, -15, 0.0f)));
+		particleList.insert(particleList.begin(), new Object(shaderHandler, 5, glm::vec3(rand()%22-10, -15.0f, -10.0f)));
 		//particleList.front()->getTransform()->translate(particleList.front()->position);
 		
 		particlePos += 2;
@@ -104,7 +104,7 @@ void Game::render() {
 	//shaderHandler->use("weirdGlow_shader");
 	//shaderHandler->updateView();
 	
-	//monkey->draw();
+	monkey->draw();
 	/*
 	ImGui_ImplGlfwGL3_NewFrame();
 
@@ -118,10 +118,10 @@ void Game::render() {
 	*/
 
 	shaderHandler->use("Particles");
-	shaderHandler->updateView();
-
+	
 	for (int i = 0; i < particleList.size(); i++) {
 		particleList[i]->draw();
+		shaderHandler->updateParticleView(particleList[i]->getTransform()->getMatrix());
 		//std::cout << "drawn: " << particleList.size() << std::endl;
 	}
 }

@@ -23,6 +23,7 @@ public:
 	virtual ~ShaderHandler();
 
 	void updateView();
+	void updateParticleView(glm::mat4 m);
 
 	void setUniformMatrix4(glm::mat4 mat, const char* uniformName);
 	void setUniformVec4(glm::vec4 vec, const char* uniformName);

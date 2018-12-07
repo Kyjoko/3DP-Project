@@ -7,5 +7,5 @@ in vec2 uv_gs;
 uniform sampler2D tex;
 
 void main(){
-	outColor = texture(tex, uv_gs);
+	outColor = vec4(1.0, 1.0, 1.0, 1.0); //texture(tex, uv_gs) + vec4(255.0, 0.0, 0.0, 1.0);
 }

@@ -16,6 +16,23 @@ void ShaderHandler::updateView(){
 	setUniformMatrix4(cam->getTransform()->getMatrix(), "mat_view");
 }
 
+void ShaderHandler::updateParticleView(glm::mat4 m) {
+	glm::mat4 mat_view = cam->getTransform()->getMatrix();
+	glm::mat4 mat_world = m;
+	glm::mat4 mat_worldView;
+	mat_world[0][0] = mat_view[0][0];
+	mat_world[0][1] = mat_view[1][0];
+	mat_world[0][2] = mat_view[2][0];
+	mat_world[1][0] = mat_view[0][1];
+	mat_world[1][1] = mat_view[1][1];
+	mat_world[1][2] = mat_view[2][1];
+	mat_world[2][0] = mat_view[0][2];
+	mat_world[2][1] = mat_view[1][2];
+	mat_world[2][2] = mat_view[2][2];
+	mat_worldView = mat_view * mat_world;
+	setUniformMatrix4(mat_worldView, "mat_view");
+}
+
 
 void ShaderHandler::setUniformMatrix4(glm::mat4 mat, const char* uniformName) {
 	GLuint loc = glGetUniformLocation(getActiveShader()->getProgram(), uniformName);

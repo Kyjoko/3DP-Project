@@ -4,10 +4,10 @@
 
 Model::Model() {
 
-	std::array<float, 8> verticesQuad = { -0.5f, 0.5f, 
-										   0.5f, 0.5f, 
-										   0.5f, -0.5f,
-										  -0.5f, -0.5f };
+	std::array<float, 8> verticesQuad = { -0.25f, 0.25f, 
+										   0.25f, 0.25f, 
+										   0.25f, -0.25f,
+										  -0.25f, -0.25f };
 
 	std::array<float, 8> uvCoordQuad = { 0, 0, 
 									 0, 1, 
@@ -87,7 +87,7 @@ Model::Model(const char* path, bool hasUV) {
 	
 	if (hasUV != true)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_FLOAT, check);
+		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_FLOAT, check);
 	}
 	else
 	{
