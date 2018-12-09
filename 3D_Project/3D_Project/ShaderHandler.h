@@ -16,7 +16,7 @@ private:
 	std::string active;
 
 	Camera* cam;
-	std::vector<PointLight> lights;
+	std::vector<PointLight*> lights;
 
 public:
 	ShaderHandler(Camera* cam);
@@ -36,7 +36,7 @@ public:
 	void use(std::string shaderName);
 
 	void addShader(Shader* shader, std::string name);
-	void addLight(PointLight light);
+	void addLight(PointLight* light);
 	void updateLights();
 };
 

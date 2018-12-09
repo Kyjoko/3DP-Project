@@ -6,6 +6,10 @@ ShaderHandler::ShaderHandler(Camera* cam) {
 
 
 ShaderHandler::~ShaderHandler() {
+	for (size_t i = 0; i < lights.size(); i++) {
+		delete lights[i];
+	}
+
 	for (auto const& sh : shaders) {
 		delete shaders.at(sh.first);
 	}
@@ -80,16 +84,16 @@ void ShaderHandler::addShader(Shader* shader, std::string name) {
 	shaders.insert(std::pair<std::string, Shader*>(name, shader));
 }
 
-void ShaderHandler::addLight(PointLight light) {
+void ShaderHandler::addLight(PointLight* light) {
 	lights.push_back(light);
 }
 
 void ShaderHandler::updateLights() {
 	for (size_t i = 0; i < lights.size(); i++) {
 		std::string target("pointLights[" + std::to_string(i) + "].");
-		setUniformVec3(lights[i].position, std::string(target + "pos").c_str());
-		setUniformVec4(lights[i].color, std::string(target + "color").c_str());
-		setUniformFloat(lights[i].radius, std::string(target + "radius").c_str());
+		setUniformVec3(lights[i]->position, std::string(target + "pos").c_str());
+		setUniformVec4(lights[i]->color, std::string(target + "color").c_str());
+		setUniformFloat(lights[i]->radius, std::string(target + "radius").c_str());
 	}
 	setUniformInt(lights.size(), "lightCount");
 }

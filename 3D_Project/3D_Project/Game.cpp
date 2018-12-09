@@ -36,10 +36,14 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 	box = new Object(shaderHandler, "../Resources/Box1.obj", true);
 	box->getTransform()->translate(glm::vec3(4, 0, 2));
 
-	terrain = new Model(glm::vec3(-7, -2, -7), 10, 10, 0.5f);
+	terrain = new Model(glm::vec3(-7, -2, -7), 40, 40, 1.f);
 
-	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, 2), glm::vec4(1, 0, 0, 1), 1});		//<--Drog ner radius lite så man kan 
-	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, -2), glm::vec4(0, 1, 0, 1), 1.5});	//se texturen utan att bli blind
+	shaderHandler->addLight(new PointLight{ glm::vec3(0, 0, 2), glm::vec4(1, 0, 0, 1), 1});		//<--Drog ner radius lite så man kan 
+	shaderHandler->addLight(new PointLight{ glm::vec3(0, 0, -2), glm::vec4(0, 1, 0, 1), 1.5});	//se texturen utan att bli blind
+
+	cameraLight = new PointLight{cam->getTransform()->getPosition(), glm::vec4(1, 1, 1, 1), 1};
+	shaderHandler->addLight(cameraLight);
+
 	shaderHandler->updateLights();
 
 }
@@ -95,6 +99,9 @@ void Game::update(double dt) {
 	//monkey->getTransform()->rotate(glm::radians(45.0f) * dt, glm::vec3(0.0f, 1.0f, 0.0f));
 	//monkey->getTransform()->translate((monkey->getTransform()->getPosition() + monkey->getTransform()->getDir() * (float)dt));
 	//box->getTransform()->rotate(glm::radians(45.0f) * dt, glm::vec3(0.0f, 1.0f, 0.0f));
+
+	cameraLight->position = cam->getTransform()->getPosition();
+	shaderHandler->updateLights();
 }
 
 void Game::render() {

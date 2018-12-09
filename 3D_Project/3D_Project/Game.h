@@ -34,6 +34,9 @@ private:
 	std::vector<Object*> particleList;
 	float timeElapsed;
 
+	//Debug?
+	PointLight* cameraLight;
+
 public:
 	int particlePos;
 
