@@ -31,9 +31,46 @@ void Object::loadModel(const char * path, bool hasUV) {
 	model = new Model(path, hasUV);
 }
 
+void Object::loadTex()
+{
+	glActiveTexture(GL_TEXTURE0);
+	glGenTextures(2, model->getTex()); //Generate Texture object to tex
+	glBindTexture(GL_TEXTURE_2D, model->getTex()[0]); //Bind texture for use
+
+	int width, height;
+	unsigned char* image = SOIL_load_image("../Resources/companion.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+	shader->setUniformInt(0, "tex");
+
+	//Set Wraping
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	//Set Filtering
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, model->getTex()[1]); //Bind texture for use
+
+	image = SOIL_load_image("../Resources/snow.png", &width, &height, 0, SOIL_LOAD_RGBA);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+	shader->setUniformInt(1, "particle");
+
+	//Set Wraping
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	//Set Filtering
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+}
+
 bool Object::particleUpdate(float dt)
 {
-	this->speed.y += 9 * dt; //Gravity
+	this->speed.y += 5.5 * dt; //Gravity
 	this->change = this->speed + this->position;
 	this->elapsedTime += dt;
 	//std::cout << "y: " << this->speed.y << std::endl;

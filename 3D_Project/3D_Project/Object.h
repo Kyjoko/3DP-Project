@@ -21,6 +21,7 @@ public:
 	virtual ~Object();
 
 	void loadModel(const char* path, bool hasUV);
+	void loadTex();
 
 	bool particleUpdate(float dt); //Updates Billboard Particle Object Variables
 	void draw();

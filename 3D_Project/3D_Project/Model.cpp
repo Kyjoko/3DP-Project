@@ -1,12 +1,12 @@
 #include "Model.h"
-#include "../SOIL/src/SOIL.h" //Simple Open Image Lib
+
 
 Model::Model() {
 
-	std::array<float, 8> verticesQuad = { -0.25f, 0.25f, 
-										   0.25f, 0.25f, 
-										   0.25f, -0.25f,
-										  -0.25f, -0.25f };
+	std::array<float, 8> verticesQuad = { -0.1f, 0.1f, 
+										   0.1f, 0.1f, 
+										   0.1f, -0.1f,
+										  -0.1f, -0.1f };
 
 	std::array<float, 8> uvCoordQuad = { 0, 0, 
 									 0, 1, 
@@ -111,16 +111,16 @@ Model::Model(const char* path, bool hasUV) {
 		std::cout << "Could not load model from " << path << std::endl;
 	}
 
-	glGenTextures(1, &tex); //Generate Texture object to tex
-	glBindTexture(GL_TEXTURE_2D, tex); //Bind texture for use
+	//glGenTextures(1, &tex); //Generate Texture object to tex
+	//glBindTexture(GL_TEXTURE_2D, tex); //Bind texture for use
 
-	//Set Wraping
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	////Set Wraping
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	//Set Filtering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	////Set Filtering
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	//Image pixels
 	float check[] = {
@@ -129,18 +129,17 @@ Model::Model(const char* path, bool hasUV) {
 	};
 
 	//Inladdning av bild från fil till textur
-	int width, height;
-	unsigned char* image = SOIL_load_image("../Resources/companion.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 	
-	if (hasUV != true)
-	{
-		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_FLOAT, check);
-	}
-	else
-	{
-		//Load image
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-	}
+	
+	//if (hasUV != true)
+	//{
+	//	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_FLOAT, check);
+	//}
+	//else
+	//{
+	//	//Load image
+	//	
+	//}
 
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -276,4 +275,73 @@ void Model::drawParticle() const {
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*) sizeof(glm::vec3));
 
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+}
+
+void Model::loadTex()
+{
+	glGenTextures(2, tex);
+
+	int width, height;
+	unsigned char* image;
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex[0]);
+	image = SOIL_load_image("../Resources/particles_rain.png", &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+		GL_UNSIGNED_BYTE, image);
+	SOIL_free_image_data(image);
+	//glUniform1i(glGetUniformLocation(shaderProgram, "texKitten"), 0);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, tex[1]);
+	image = SOIL_load_image("../Resources/companion.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+		GL_UNSIGNED_BYTE, image);
+	SOIL_free_image_data(image);
+	//glUniform1i(glGetUniformLocation(shaderProgram, "texPuppy"), 1);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	//glActiveTexture(GL_TEXTURE0);
+	//glGenTextures(2, tex); //Generate Texture object to tex
+	//glBindTexture(GL_TEXTURE_2D, tex[0]); //Bind texture for use
+
+	//int width, height;
+	//unsigned char* image = SOIL_load_image("../Resources/companion.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+	////Set Wraping
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	////Set Filtering
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	//glActiveTexture(GL_TEXTURE1);
+	//glBindTexture(GL_TEXTURE_2D, tex[1]); //Bind texture for use
+
+	//image = SOIL_load_image("../Resources/particles_rain.png", &width, &height, 0, SOIL_LOAD_RGB);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+	////Set Wraping
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	////Set Filtering
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+}
+
+GLuint* Model::getTex()
+{
+	return tex;
 }

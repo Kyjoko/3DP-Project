@@ -19,6 +19,7 @@ uniform PointLight pointLights[MAX_LIGHTS];
 uniform int lightCount;
 
 uniform sampler2D tex;
+uniform sampler2D particle;
 
 void main(){
 

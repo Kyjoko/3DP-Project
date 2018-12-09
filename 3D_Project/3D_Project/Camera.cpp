@@ -22,6 +22,10 @@ Camera::Camera(unsigned int screenWidth, unsigned int screenHeight, float fov) :
 
 }
 
+Camera::~Camera()
+{
+}
+
 void Camera::update(float dt) {
 	if (keys[0].pressed) {
 		transform.translate(

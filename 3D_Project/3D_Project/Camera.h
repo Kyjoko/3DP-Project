@@ -32,7 +32,7 @@ private:
 
 public:
 	Camera(unsigned int screenWidth, unsigned int screenHeight, float fov);
-
+	~Camera();
 	void update(float dt);
 
 	void handleMouseMovement(glm::vec2 pos);

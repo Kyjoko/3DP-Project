@@ -4,6 +4,7 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <glm.hpp>
+#include "../SOIL/src/SOIL.h" //Simple Open Image Lib
 
 #include <vector>
 #include <array>
@@ -19,7 +20,7 @@ struct TriangleVertex {
 class Model {
 private:
 	GLuint buffer;
-	GLuint tex;
+	GLuint tex[2];
 
 public:
 	std::vector<TriangleVertex> vertices;
@@ -33,5 +34,8 @@ public:
 
 	void draw() const;
 	void drawParticle() const;
+	void loadTex();
+
+	GLuint* getTex();
 };
 

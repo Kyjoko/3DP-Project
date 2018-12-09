@@ -8,6 +8,8 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 	std::srand(time(NULL));
 
 	this->particlePos = -10;
+	this->random = static_cast <float> (rand()) / 
+				(static_cast <float> (RAND_MAX / 1.0)) + 1 / 60.0f; //Random timer for particles: 0.167-2.000
 
 	//Initialize GLEW
 	glewInit();
@@ -24,6 +26,9 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 	shaderHandler->addShader(new Shader("ParticleVertexShader.vs", "ParticleFragmentShader.fs"), "Particles");
 	shaderHandler->use("Particles");
 
+	particleList.insert(particleList.begin(), new Object(shaderHandler, 5, glm::vec3(0, 0, 0)));
+	particleList.front()->loadTex();
+
 	shaderHandler->addShader(new Shader("VertexShader.vs", "FragmentShader.fs"), "default_shader");
 	shaderHandler->use("default_shader");
 
@@ -32,14 +37,16 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 	shaderHandler->use("Geo");
 
 	//Debug
+
 	monkey = new Object(shaderHandler, "../Resources/Monkey.obj", false);
 	box = new Object(shaderHandler, "../Resources/Box1.obj", true);
+	box->loadTex();
 	box->getTransform()->translate(glm::vec3(4, 0, 2));
 
 	terrain = new Model(glm::vec3(-7, -2, -7), 10, 10, 0.5f);
 
-	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, 2), glm::vec4(1, 0, 0, 1), 1});		//<--Drog ner radius lite så man kan 
-	shaderHandler->addLight(PointLight{ glm::vec3(0, 0, -2), glm::vec4(0, 1, 0, 1), 1.5});	//se texturen utan att bli blind
+	shaderHandler->addLight(PointLight{ glm::vec3(0, 8, 4), glm::vec4(255, 250, 244, 255)/256.0f, 1.5});		//<--Drog ner radius lite så man kan 
+	shaderHandler->addLight(PointLight{ glm::vec3(-2,-2, -2), glm::vec4(0, 1, 0, 1), 0.5});	//se texturen utan att bli blind
 	shaderHandler->updateLights();
 
 }
@@ -52,35 +59,33 @@ Game::~Game() {
 	delete box;
 	delete terrain;
 
-	for (int i = 0; i < particleList.size(); i++) {
-		delete particleList[i];
+	int size = this->particleList.size();
+
+	for (int i = 0; i < size; i++) {
+		delete this->particleList[i];
 	}
 }
 
 void Game::update(double dt) {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+	int particleSize = particleList.size();
+	float x = (static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 20.0f)))-10.0f;
+	float z = (static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 20.0f)))-10.0f;
 
-	if (particleList.size() < 2048 && timeElapsed > static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 1.0)))
+	if (particleSize <= 512 && timeElapsed > 1 / 60.0f)
 	{
-		if (this->particlePos == 14)
-		{
-			particlePos = -10;
-		}
-
-		particleList.insert(particleList.begin(), new Object(shaderHandler, 5, glm::vec3(rand()%22-10, -15.0f, -10.0f)));
-		//particleList.front()->getTransform()->translate(particleList.front()->position);
-		
-		particlePos += 2;
+		particleList.insert(particleList.begin(), new Object(shaderHandler, 5, glm::vec3(x, -15.0f, z)));
 		timeElapsed = 0;
+		std::cout << "Numbers of particles: " << particleSize <<
+			"." << std::endl;
 	}
+
 	for (int i = 0; i < particleList.size(); i++) {
 		if (particleList[i]->particleUpdate(dt) == false) {
 			particleList[i]->position.y = -15;
 			particleList[i]->speed.y = 0;
 			particleList[i]->elapsedTime = 0;
-
-			//particleList.erase(particleList.begin()+particleList.size()-1);
 		}
 		else {
 			particleList[i]->getTransform()->translate(particleList[i]->change);
@@ -91,7 +96,6 @@ void Game::update(double dt) {
 
 	timeElapsed += dt;
 	
-	//particle->getTransform()->rotate(glm::radians(45.0f) * dt, glm::vec3(0.0f, 1.0f, 0.0f));
 	//monkey->getTransform()->rotate(glm::radians(45.0f) * dt, glm::vec3(0.0f, 1.0f, 0.0f));
 	//monkey->getTransform()->translate((monkey->getTransform()->getPosition() + monkey->getTransform()->getDir() * (float)dt));
 	//box->getTransform()->rotate(glm::radians(45.0f) * dt, glm::vec3(0.0f, 1.0f, 0.0f));

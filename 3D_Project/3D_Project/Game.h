@@ -2,8 +2,7 @@
 
 #include "Camera.h"
 #include "Object.h"
-//#include "Shader.h"
-#include "Particle.h"
+#include "Shaderhandler.h"
 
 #include <iostream>
 #include <functional>
@@ -36,6 +35,7 @@ private:
 
 public:
 	int particlePos;
+	float random;
 
 	Game(GLFWwindow* window, unsigned int width, unsigned int height);
 	virtual ~Game();
