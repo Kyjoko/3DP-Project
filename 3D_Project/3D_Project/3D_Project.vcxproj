@@ -137,8 +137,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="Particle.cpp" />
-    <ClCompile Include="ParticleHandler.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderHandler.cpp" />
     <ClCompile Include="Terrain.cpp" />
@@ -165,8 +163,6 @@
     <ClInclude Include="imgui\stb_truetype.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Object.h" />
-    <ClInclude Include="Particle.h" />
-    <ClInclude Include="ParticleHandler.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderHandler.h" />
     <ClInclude Include="Terrain.h" />

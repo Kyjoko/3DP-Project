@@ -2,8 +2,7 @@
 
 #include "Camera.h"
 #include "Object.h"
-//#include "Shader.h"
-#include "Particle.h"
+#include "Shader.h"
 
 #include <iostream>
 #include <functional>
@@ -30,7 +29,6 @@ private:
 
 	Model* terrain;
 
-	//Object* particle;
 	std::vector<Object*> particleList;
 	float timeElapsed;
 
@@ -38,7 +36,6 @@ private:
 	PointLight* cameraLight;
 
 public:
-	int particlePos;
 
 	Game(GLFWwindow* window, unsigned int width, unsigned int height);
 	virtual ~Game();

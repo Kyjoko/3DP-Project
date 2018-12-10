@@ -24,6 +24,7 @@ public:
 
 	bool particleUpdate(float dt); //Updates Billboard Particle Object Variables
 	void draw();
+	void loadTex();
 
 	glm::vec3 change;
 	glm::vec3 position;

@@ -7,8 +7,6 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 	this->timeElapsed = 0;
 	std::srand(time(NULL));
 
-	this->particlePos = -10;
-
 	//Initialize GLEW
 	glewInit();
 
@@ -24,6 +22,9 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 	shaderHandler->addShader(new Shader("ParticleVertexShader.vs", "ParticleFragmentShader.fs"), "Particles");
 	shaderHandler->use("Particles");
 
+	particleList.insert(particleList.begin(), new Object(shaderHandler, 5, glm::vec3(0, 0, 0)));
+	particleList.front()->loadTex();
+
 	shaderHandler->addShader(new Shader("VertexShader.vs", "FragmentShader.fs"), "default_shader");
 	shaderHandler->use("default_shader");
 
@@ -34,6 +35,7 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 	//Debug
 	monkey = new Object(shaderHandler, "../Resources/Monkey.obj", false);
 	box = new Object(shaderHandler, "../Resources/Box1.obj", true);
+	box->loadTex();
 	box->getTransform()->translate(glm::vec3(4, 0, 2));
 
 	terrain = new Model(glm::vec3(-7, -2, -7), 40, 40, 1.f);
@@ -64,20 +66,20 @@ Game::~Game() {
 void Game::update(double dt) {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+	int particleSize = particleList.size();
+	float x = (static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 40.0f))) - 20.0f;
+	float z = (static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 40.0f))) - 20.0f;
 
-	if (particleList.size() < 2048 && timeElapsed > static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 1.0)))
+	if (particleSize < 1025 && timeElapsed > 1/60.0f)
 	{
-		if (this->particlePos == 14)
-		{
-			particlePos = -10;
-		}
-
-		particleList.insert(particleList.begin(), new Object(shaderHandler, 5, glm::vec3(rand()%22-10, -15.0f, -10.0f)));
+		particleList.insert(particleList.begin(), new Object(shaderHandler, 5, glm::vec3(x, -15.0f, z)));
 		//particleList.front()->getTransform()->translate(particleList.front()->position);
-		
-		particlePos += 2;
+
 		timeElapsed = 0;
+
+		std::cout << "Number of particles: " << particleSize << std::endl;
 	}
+
 	for (int i = 0; i < particleList.size(); i++) {
 		if (particleList[i]->particleUpdate(dt) == false) {
 			particleList[i]->position.y = -15;
