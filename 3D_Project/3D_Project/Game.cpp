@@ -43,7 +43,7 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 	box->loadTex();
 	box->getTransform()->translate(glm::vec3(4, 0, 2));
 
-	terrain = new Model(glm::vec3(-7, -2, -7), 40, 40, 1.f);
+	terrain = new Terrain(glm::vec3(-7, -2, -7), glm::vec2(20, 20), 1.f, "../Resources/heightmap.bmp");
 
 	shaderHandler->addLight(new PointLight{ glm::vec3(0, 0, 2), glm::vec4(1, 0, 0, 1), 1});
 	shaderHandler->addLight(new PointLight{ glm::vec3(0, 0, -2), glm::vec4(0, 1, 0, 1), 1.5});

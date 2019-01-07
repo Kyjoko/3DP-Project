@@ -58,39 +58,34 @@ Model::Model() {
 
 }
 
-float getPixel(unsigned char* image, int imageWidth, float x, float y) {
-	return (float)(image[(int)(y * imageWidth + x * 4.f)] / 127.5f - 1.f);
+float Model::getPixel(Image* image, int x, int y) {
+	return ((unsigned char)image->pixels[3 * (y * image->width + x)] / 127.5f) - 1.f;
 }
 
-glm::vec3 getNormal(unsigned char* image, int imageWidth, float x, float z) {
+glm::vec3 Model::getNormal(Image* image, float x, float z) {
 	if (x == 0.f)
 		x = 1.f;
 	if (z == 0.f)
 		z = 1.f;
-	float left = getPixel(image, imageWidth, x - 1.f, z);
-	float right = getPixel(image, imageWidth, x + 1.f, z);
-	float down = getPixel(image, imageWidth, x, z + 1.f);
-	float up = getPixel(image, imageWidth, x, z - 1.f);
+	float left = getPixel(image, x - 1.f, z);
+	float right = getPixel(image, x + 1.f, z);
+	float down = getPixel(image, x, z + 1.f);
+	float up = getPixel(image, x, z - 1.f);
 	return glm::normalize(glm::vec3(left - right, 1.f, down - up));
 }
 
-Model::Model(glm::vec3 pos,int width, int height, float tileSize) {
+
+Model::Model(glm::vec3 pos,int width, int height, float tileSize, const char* path) {
 
 	//Load heightmap
-	int imageWidth, imageHeight;
-	//unsigned char* image = SOIL_load_image("../Resources/terrain-heightmap-01.png", &imageWidth, &imageHeight, 0, SOIL_LOAD_RGB);
-	unsigned char* image = SOIL_load_image("../Resources/200px-Heightmap.png", &imageWidth, &imageHeight, 0, SOIL_LOAD_RGB);
-
+	Image* image = loadBMP(path);
+	
 	//Make terrain
 	int scale = 2;
 	float y = pos.y;
 	for (float tileZ = pos.x; tileZ < pos.x + height; tileZ += tileSize) {
 		for (float tileX = pos.z; tileX < pos.z + width; tileX += tileSize) {
-			//y += (image[(int)((tileZ - pos.z) * imageWidth + tileX - pos.x) * 4]) / 255 * 5;
-			//std::cout << (image[(int)((tileZ - pos.z) * imageWidth + tileX - pos.x) * 4]) / 255 * 5 << std::endl;
-			//std::cout << (int)image[(int)((tileZ - pos.z) * imageWidth + tileX - pos.x) * 4] << std::endl;
-			//y = pos.y + (int)image[(int)((tileZ - pos.z) * imageWidth + tileX - pos.x) * 4] / 10;
-
+			
 			TriangleVertex v1{ glm::vec3(tileX, y, tileZ), glm::vec2(0, 0), glm::vec3(0, 1, 0) };
 			for (int i = 0; i < 6; i++) {
 				if (i == 0 || i == 3) 
@@ -102,64 +97,15 @@ Model::Model(glm::vec3 pos,int width, int height, float tileSize) {
 				else if(i == 5)
 					v1.pos = glm::vec3(tileX + tileSize, y, tileZ);
 
-				float x = (v1.pos.x - pos.x) / width * imageWidth;
-				float z = (v1.pos.z - pos.z) / height * imageHeight;
-				if(x == 0) std::cout << x << " : " << getPixel(image, imageWidth, x, z) << std::endl;
-				v1.pos.y = pos.y + getPixel(image, imageWidth, x, z) * scale; // set height from heightmap
-				v1.normal = getNormal(image, imageWidth, x, z);
-				//	std::cout << getPixel(image, imageWidth, (v1.pos.x - pos.x) / width * imageWidth, (v1.pos.z - pos.z) / height * imageHeight) << std::endl;
+				float x = (v1.pos.x - pos.x) / width * image->width;
+				float z = (v1.pos.z - pos.z) / height * image->height;
+
+				if(x == 0) std::cout << x << " : " << getPixel(image, x, z) << std::endl;
+				v1.pos.y = pos.y + getPixel(image, x, z) * scale; // set height from heightmap
+				
+				v1.normal = getNormal(image, x, z);
 				this->vertices.push_back(v1);
 			}
-			/*
-			float x, z;
-			TriangleVertex v1{ glm::vec3(tileX, y, tileZ), glm::vec2(0, 0), glm::vec3(0, 1, 0) };
-			x = (v1.pos.x - pos.x) / width * imageWidth;
-			z = (v1.pos.z - pos.z) / height * imageHeight;
-			v1.pos.y = pos.y + getPixel(image, imageWidth, x, z, scale); // set height from heightmap
-			v1.normal = getNormal(image, imageWidth, x, z, scale);
-		//	std::cout << getPixel(image, imageWidth, (v1.pos.x - pos.x) / width * imageWidth, (v1.pos.z - pos.z) / height * imageHeight) << std::endl;
-			this->vertices.push_back(v1);
-
-			v1.pos = glm::vec3(tileX, y, tileZ + tileSize);
-			x = (v1.pos.x - pos.x) / width * imageWidth;
-			z = (v1.pos.z - pos.z) / height * imageHeight;
-			v1.pos.y = pos.y + getPixel(image, imageWidth, x, z, scale); // set height from heightmap
-			v1.normal = getNormal(image, imageWidth, x, z, scale);
-		//	std::cout << getPixel(image, imageWidth, (v1.pos.x - pos.x) / width * imageWidth, (v1.pos.z - pos.z) / height * imageHeight) << std::endl;
-			this->vertices.push_back(v1);
-
-			v1.pos = glm::vec3(tileX + tileSize, y, tileZ + tileSize);
-			x = (v1.pos.x - pos.x) / width * imageWidth;
-			z = (v1.pos.z - pos.z) / height * imageHeight;
-			v1.pos.y = pos.y + getPixel(image, imageWidth, x, z, scale); // set height from heightmap
-			v1.normal = getNormal(image, imageWidth, x, z, scale);
-		//	std::cout << getPixel(image, imageWidth, (v1.pos.x - pos.x) / width * imageWidth, (v1.pos.z - pos.z) / height * imageHeight) << std::endl;
-			this->vertices.push_back(v1);
-
-			v1.pos = glm::vec3(tileX, y, tileZ);
-			x = (v1.pos.x - pos.x) / width * imageWidth;
-			z = (v1.pos.z - pos.z) / height * imageHeight;
-			v1.pos.y = pos.y + getPixel(image, imageWidth, x, z, scale); // set height from heightmap
-			v1.normal = getNormal(image, imageWidth, x, z, scale);
-		//	std::cout << getPixel(image, imageWidth, (v1.pos.x - pos.x) / width * imageWidth, (v1.pos.z - pos.z) / height * imageHeight) << std::endl;
-			this->vertices.push_back(v1);
-
-			v1.pos = glm::vec3(tileX + tileSize, y, tileZ + tileSize);
-			x = (v1.pos.x - pos.x) / width * imageWidth;
-			z = (v1.pos.z - pos.z) / height * imageHeight;
-			v1.pos.y = pos.y + getPixel(image, imageWidth, x, z, scale); // set height from heightmap
-			v1.normal = getNormal(image, imageWidth, x, z, scale);
-		//	std::cout << getPixel(image, imageWidth, (v1.pos.x - pos.x) / width * imageWidth, (v1.pos.z - pos.z) / height * imageHeight) << std::endl;
-			this->vertices.push_back(v1);
-			
-			v1.pos = glm::vec3(tileX + tileSize, y, tileZ);
-			x = (v1.pos.x - pos.x) / width * imageWidth;
-			z = (v1.pos.z - pos.z) / height * imageHeight;
-			v1.pos.y = pos.y + getPixel(image, imageWidth, x, z, scale); // set height from heightmap
-			v1.normal = getNormal(image, imageWidth, x, z, scale);
-		//	std::cout << getPixel(image, imageWidth, (v1.pos.x - pos.x) / width * imageWidth, (v1.pos.z - pos.z) / height * imageHeight) << std::endl;
-			this->vertices.push_back(v1);
-			*/
 		}
 	}
 

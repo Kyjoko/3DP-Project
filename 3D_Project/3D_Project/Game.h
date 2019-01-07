@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "Object.h"
 #include "Shader.h"
+#include "Terrain.h"
 
 #include <iostream>
 #include <functional>
@@ -28,7 +29,7 @@ private:
 	Object* monkey;
 	Object* box;
 
-	Model* terrain;
+	Terrain* terrain;
 
 	std::vector<Object*> particleList;
 	float timeElapsed;
