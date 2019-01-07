@@ -19,6 +19,11 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 
 	shaderHandler = new ShaderHandler(cam);
 
+	shaderHandler->addShader(new Shader("ShadowVertexShader.vs", "ShadowFragmentShader.fs"), "Shadow");
+	shaderHandler->use("Shadow");
+
+	shadow = new Object(shaderHandler);
+
 	shaderHandler->addShader(new Shader("ParticleVertexShader.vs", "ParticleFragmentShader.fs"), "Particles");
 	shaderHandler->use("Particles");
 
@@ -40,8 +45,8 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 
 	terrain = new Model(glm::vec3(-7, -2, -7), 40, 40, 1.f);
 
-	shaderHandler->addLight(new PointLight{ glm::vec3(0, 0, 2), glm::vec4(1, 0, 0, 1), 1});		//<--Drog ner radius lite så man kan 
-	shaderHandler->addLight(new PointLight{ glm::vec3(0, 0, -2), glm::vec4(0, 1, 0, 1), 1.5});	//se texturen utan att bli blind
+	shaderHandler->addLight(new PointLight{ glm::vec3(0, 0, 2), glm::vec4(1, 0, 0, 1), 1});
+	shaderHandler->addLight(new PointLight{ glm::vec3(0, 0, -2), glm::vec4(0, 1, 0, 1), 1.5});
 
 	cameraLight = new PointLight{cam->getTransform()->getPosition(), glm::vec4(1, 1, 1, 1), 1};
 	shaderHandler->addLight(cameraLight);
@@ -54,6 +59,7 @@ Game::~Game() {
 	delete cam;
 	delete shaderHandler;
 
+	delete shadow;
 	delete monkey;
 	delete box;
 	delete terrain;
@@ -70,14 +76,14 @@ void Game::update(double dt) {
 	float x = (static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 40.0f))) - 20.0f;
 	float z = (static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 40.0f))) - 20.0f;
 
-	if (particleSize < 1025 && timeElapsed > 1/60.0f)
+	if (particleSize <= 512 && timeElapsed >= 1/60.0f)
 	{
 		particleList.insert(particleList.begin(), new Object(shaderHandler, 5, glm::vec3(x, -15.0f, z)));
 		//particleList.front()->getTransform()->translate(particleList.front()->position);
 
 		timeElapsed = 0;
 
-		std::cout << "Number of particles: " << particleSize << std::endl;
+		//std::cout << "Number of particles: " << particleSize << std::endl;
 	}
 
 	for (int i = 0; i < particleList.size(); i++) {
@@ -97,7 +103,6 @@ void Game::update(double dt) {
 
 	timeElapsed += dt;
 	
-	//particle->getTransform()->rotate(glm::radians(45.0f) * dt, glm::vec3(0.0f, 1.0f, 0.0f));
 	//monkey->getTransform()->rotate(glm::radians(45.0f) * dt, glm::vec3(0.0f, 1.0f, 0.0f));
 	//monkey->getTransform()->translate((monkey->getTransform()->getPosition() + monkey->getTransform()->getDir() * (float)dt));
 	//box->getTransform()->rotate(glm::radians(45.0f) * dt, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -107,6 +112,7 @@ void Game::update(double dt) {
 }
 
 void Game::render() {
+
 	shaderHandler->use("Geo");
 	shaderHandler->updateView();
 	
@@ -132,6 +138,11 @@ void Game::render() {
 	ImGui::Render();
 	*/
 
+	shaderHandler->use("Shadow");
+	shadow->drawDepth();
+
+	glViewport(0, 0, width, height);
+
 	shaderHandler->use("Particles");
 	
 	for (int i = 0; i < particleList.size(); i++) {
@@ -139,6 +150,16 @@ void Game::render() {
 		shaderHandler->updateParticleView(particleList[i]->getTransform()->getMatrix());
 		//std::cout << "drawn: " << particleList.size() << std::endl;
 	}
+}
+
+int Game::getHeight()
+{
+	return this->height;
+}
+
+int Game::getWidth()
+{
+	return this->width;
 }
 
 void Game::mouseMoveCallback(GLFWwindow* window, double x, double y) {

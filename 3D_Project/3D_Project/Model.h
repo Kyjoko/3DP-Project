@@ -34,6 +34,7 @@ public:
 
 	void draw() const;
 	void drawParticle() const;
+	void drawDepth() const;
 	GLuint* getTex();
 };
 

@@ -349,3 +349,12 @@ void Model::drawParticle() const {
 
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 }
+
+void Model::drawDepth() const {
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), 0);
+
+	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+}

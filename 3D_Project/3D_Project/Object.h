@@ -1,14 +1,18 @@
 #pragma once
-#include "Model.h"
 #include "Transform.h"
-#include "ShaderHandler.h"
+#include "Shadow.h"
+//#include "Model.h"
+//#include "ShaderHandler.h"
+
 class Object {
 private:
-	Model* model;
+	Model *model;
 
 	Transform transform;
 
-	ShaderHandler * shader;
+	ShaderHandler *shader;
+
+	Shadow *shadow;
 
 	float TTL; //Time To Live;
 	float size;
@@ -16,6 +20,7 @@ private:
 
 public:
 	Object();
+	Object(ShaderHandler *shader);
 	Object(ShaderHandler *shader, float TTL, glm::vec3 pos);
 	Object(ShaderHandler *shader, const char* path, bool hasUV);
 	virtual ~Object();
@@ -24,6 +29,7 @@ public:
 
 	bool particleUpdate(float dt); //Updates Billboard Particle Object Variables
 	void draw();
+	void drawDepth();
 	void loadTex();
 
 	glm::vec3 change;

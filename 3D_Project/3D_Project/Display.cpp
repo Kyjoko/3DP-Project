@@ -56,7 +56,6 @@ Display::Display(unsigned int width, unsigned int height, const char * title) {
 Display::~Display() {
 	delete game;
 	glfwTerminate();
-
 }
 
 void Display::render() {

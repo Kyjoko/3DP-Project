@@ -139,6 +139,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderHandler.cpp" />
+    <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
@@ -147,6 +148,8 @@
     <None Include="GeometryShader.glsl" />
     <None Include="ParticleFragmentShader.fs" />
     <None Include="ParticleVertexShader.vs" />
+    <None Include="ShadowFragmentShader.fs" />
+    <None Include="ShadowVertexShader.vs" />
     <None Include="VertexShader.vs" />
     <None Include="VertexShader1.vs" />
   </ItemGroup>
@@ -165,6 +168,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderHandler.h" />
+    <ClInclude Include="Shadow.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="Transform.h" />
   </ItemGroup>

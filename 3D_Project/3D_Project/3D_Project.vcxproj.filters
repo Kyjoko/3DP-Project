@@ -63,6 +63,9 @@
     <ClCompile Include="Terrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Shadow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="FragmentShader.fs">
@@ -81,6 +84,12 @@
       <Filter>Source Files\Shaders</Filter>
     </None>
     <None Include="ParticleVertexShader.vs">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="ShadowFragmentShader.fs">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="ShadowVertexShader.vs">
       <Filter>Source Files\Shaders</Filter>
     </None>
   </ItemGroup>
@@ -131,6 +140,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Terrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shadow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -24,6 +24,7 @@ private:
 
 	ShaderHandler* shaderHandler;
 
+	Object* shadow;
 	Object* monkey;
 	Object* box;
 
@@ -42,6 +43,8 @@ public:
 	
 	void update(double dt);
 	void render();
+	int getHeight();
+	int getWidth();
 	
 	void mouseMoveCallback(GLFWwindow* window, double x, double y);
 	void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);

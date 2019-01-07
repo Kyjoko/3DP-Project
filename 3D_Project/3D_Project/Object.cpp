@@ -4,6 +4,11 @@ Object::Object() {
 	model = nullptr;
 }
 
+Object::Object(ShaderHandler* shader) {
+	this->shader = shader;
+	shadow = new Shadow(shader);
+	model = new Model();
+}
 
 Object::Object(ShaderHandler* shader, float TTL, glm::vec3 pos) {
 	this->shader = shader;
@@ -22,6 +27,9 @@ Object::Object(ShaderHandler* shader, const char * path, bool hasUV) {
 Object::~Object() {
 	if (model != nullptr) {
 		delete model;
+	}
+	if (shadow != nullptr) {
+		delete shadow;
 	}
 }
 
@@ -44,6 +52,11 @@ bool Object::particleUpdate(float dt)
 void Object::draw() {
 	shader->setUniformMatrix4(transform.getMatrix(), "mat_world");
 	model->draw();
+}
+
+void Object::drawDepth()
+{
+	this->shadow->renderDepth(shader, model);
 }
 
 Transform* Object::getTransform() const {

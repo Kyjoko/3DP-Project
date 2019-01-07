@@ -1,5 +1,5 @@
 #define _CRT_SECURE_NO_DEPRECATE
-#define GLM_FORCE_CTOR_INIT //Skillnad? <-- Noll aning
+#define GLM_FORCE_CTOR_INIT //Skillnad? <!-- Noll aning
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
