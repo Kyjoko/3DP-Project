@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Camera.h"
-#include "Object.h"
 #include "Shader.h"
-#include "Terrain.h"
+#include "Shadow.h"
+//#include "Terrain.h"
+//#include "Object.h"
 
 #include <iostream>
 #include <functional>
@@ -25,9 +26,10 @@ private:
 
 	ShaderHandler* shaderHandler;
 
-	Object* shadow;
 	Object* monkey;
 	Object* box;
+
+	Shadow* shadow;
 
 	Terrain* terrain;
 
@@ -36,6 +38,8 @@ private:
 
 	//Debug?
 	PointLight* cameraLight;
+	std::vector<Object*> objectList;
+	std::vector<Terrain*> terrainList;
 
 public:
 

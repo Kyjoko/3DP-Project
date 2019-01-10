@@ -1,20 +1,51 @@
 ﻿  Camera.cpp
   Display.cpp
   Game.cpp
-Game.cpp(37): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-Game.cpp(39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(8): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(69): warning C4018: '<': signed/unsigned mismatch
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(91): warning C4018: '<': signed/unsigned mismatch
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(104): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(106): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(121): warning C4018: '<': signed/unsigned mismatch
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(125): warning C4018: '<': signed/unsigned mismatch
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\game.cpp(152): warning C4018: '<': signed/unsigned mismatch
+  imageloader.cpp
   imgui.cpp
   imgui_demo.cpp
   imgui_draw.cpp
   imgui_impl_glfw_gl3.cpp
   main.cpp
   Model.cpp
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\model.cpp(28): warning C4018: '<': signed/unsigned mismatch
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\model.cpp(29): warning C4244: 'argument': conversion from '_Ty' to 'std::array<float,8>::size_type', possible loss of data
+          with
+          [
+              _Ty=float
+          ]
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\model.cpp(30): warning C4244: 'argument': conversion from '_Ty' to 'std::array<float,8>::size_type', possible loss of data
+          with
+          [
+              _Ty=float
+          ]
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\model.cpp(70): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\model.cpp(71): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\model.cpp(72): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\model.cpp(73): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\model.cpp(103): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\model.cpp(104): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   Object.cpp
-  PointLight.cpp
   Shader.cpp
+  ShaderHandler.cpp
+  Shadow.cpp
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\shadow.cpp(28): warning C4018: '<': signed/unsigned mismatch
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\shadow.cpp(32): warning C4018: '<': signed/unsigned mismatch
+  Terrain.cpp
+c:\users\same8\documents\github\3dp-project\3d_project\3d_project\terrain.cpp(4): warning C4244: 'argument': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
   Transform.cpp
-  Generating code
-c:\users\julius\source\repos\3d_project\3d_project\model.cpp(120): warning C4715: 'Model::load': not all control paths return a value
-  All 752 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Finished generating code
-  3D_Project.vcxproj -> C:\Users\Julius\source\repos\3D_Project\Release\3D_Project.exe
+Object.obj : error LNK2001: unresolved external symbol _SOIL_load_image
+C:\Users\same8\Documents\GitHub\3DP-Project\3D_Project\Release\3D_Project.exe : fatal error LNK1120: 1 unresolved externals

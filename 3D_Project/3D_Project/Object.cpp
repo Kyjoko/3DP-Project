@@ -6,7 +6,6 @@ Object::Object() {
 
 Object::Object(ShaderHandler* shader) {
 	this->shader = shader;
-	shadow = new Shadow(shader);
 	model = new Model();
 }
 
@@ -27,9 +26,6 @@ Object::Object(ShaderHandler* shader, const char * path, bool hasUV) {
 Object::~Object() {
 	if (model != nullptr) {
 		delete model;
-	}
-	if (shadow != nullptr) {
-		delete shadow;
 	}
 }
 
@@ -54,25 +50,20 @@ void Object::draw() {
 	model->draw();
 }
 
-void Object::drawDepth()
-{
-	this->shadow->renderDepth(shader, model);
-}
-
 Transform* Object::getTransform() const {
 	return (Transform*)&transform;
 }
 
 void Object::loadTex()
-{
-	glActiveTexture(GL_TEXTURE0);
+{	
 	glGenTextures(2, model->getTex()); //Generate Texture object to tex
+	
+	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, model->getTex()[0]); //Bind texture for use
-
 	int width, height;
 	unsigned char* image = SOIL_load_image("../Resources/companion.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-	shader->setUniformInt(0, "tex");
+	shader->setUniformInt(1, "tex");
 
 	//Set Wraping
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -82,11 +73,11 @@ void Object::loadTex()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	glActiveTexture(GL_TEXTURE1);
+	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, model->getTex()[1]); //Bind texture for use
 	image = SOIL_load_image("../Resources/snow.png", &width, &height, 0, SOIL_LOAD_RGBA);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-	shader->setUniformInt(1, "particle");
+	shader->setUniformInt(2, "particle");
 
 	//Set Wraping
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -95,5 +86,7 @@ void Object::loadTex()
 	//Set Filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
 }
 

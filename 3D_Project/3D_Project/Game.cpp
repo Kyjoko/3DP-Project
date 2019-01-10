@@ -19,40 +19,40 @@ Game::Game(GLFWwindow* window, unsigned int width, unsigned int height) {
 
 	shaderHandler = new ShaderHandler(cam);
 
-	shaderHandler->addShader(new Shader("ShadowVertexShader.vs", "ShadowFragmentShader.fs"), "Shadow");
-	shaderHandler->use("Shadow");
-
-	shadow = new Object(shaderHandler);
-
 	shaderHandler->addShader(new Shader("ParticleVertexShader.vs", "ParticleFragmentShader.fs"), "Particles");
-	shaderHandler->use("Particles");
+	//shaderHandler->use("Particles");
 
-	particleList.insert(particleList.begin(), new Object(shaderHandler, 5, glm::vec3(0, 0, 0)));
-	particleList.front()->loadTex();
+	shaderHandler->addShader(new Shader("ShadowVertexShader.vs", "ShadowFragmentShader.fs"), "Shadow");
+	//shaderHandler->use("Shadow");
 
 	shaderHandler->addShader(new Shader("VertexShader.vs", "FragmentShader.fs"), "default_shader");
-	shaderHandler->use("default_shader");
+	//shaderHandler->use("default_shader");
 
 	shaderHandler->addShader(new Shader("VertexShader1.vs", "FragmentShader.fs"), "weirdGlow_shader");
 	shaderHandler->addShader(new Shader("VertexShader.vs", "GeometryShader.glsl", "FragmentShader.fs"), "Geo");
 	shaderHandler->use("Geo");
 
 	//Debug
+	shadow = new Shadow(shaderHandler);
+	particleList.insert(particleList.begin(), new Object(shaderHandler, 5, glm::vec3(0, 0, 0)));
+	particleList.front()->loadTex();
 	monkey = new Object(shaderHandler, "../Resources/Monkey.obj", false);
 	box = new Object(shaderHandler, "../Resources/Box1.obj", true);
-	box->loadTex();
 	box->getTransform()->translate(glm::vec3(4, 0, 2));
 
 	terrain = new Terrain(glm::vec3(-7, -2, -7), glm::vec2(20, 20), 1.f, "../Resources/heightmap.bmp");
 
-	shaderHandler->addLight(new PointLight{ glm::vec3(0, 0, 2), glm::vec4(1, 0, 0, 1), 1});
-	shaderHandler->addLight(new PointLight{ glm::vec3(0, 0, -2), glm::vec4(0, 1, 0, 1), 1.5});
+	shaderHandler->addLight(new PointLight{ glm::vec3(-2.0f, 3.0f, 0.0f), glm::vec4(1, 1, .85, 1), 2.5});
+	//shaderHandler->addLight(new PointLight{ glm::vec3(0, 0, -2), glm::vec4(0, 1, 0, 1), 1.5});
 
 	cameraLight = new PointLight{cam->getTransform()->getPosition(), glm::vec4(1, 1, 1, 1), 1};
 	shaderHandler->addLight(cameraLight);
 
 	shaderHandler->updateLights();
 
+	objectList.push_back(monkey);
+	objectList.push_back(box);
+	terrainList.push_back(terrain);
 }
 
 Game::~Game() {
@@ -113,18 +113,26 @@ void Game::update(double dt) {
 
 void Game::render() {
 
+	shaderHandler->use("Shadow");
+	shadow->renderDepth(shaderHandler, objectList, terrainList);
+
+	glViewport(0, 0, width, height);
+
 	shaderHandler->use("Geo");
 	shaderHandler->updateView();
-	
-	terrain->draw();
 
-	box->draw();
+	for (int i = 0; i < terrainList.size(); i++)
+	{
+		terrainList[i]->draw();
+	}
+	for (int i = 0; i < objectList.size(); i++)
+	{
+		objectList[i]->draw();
+	}
+	
 
 	//shaderHandler->use("weirdGlow_shader");
 	//shaderHandler->updateView();
-	
-	monkey->draw();
-	
 	
 	/*
 	ImGui_ImplGlfwGL3_NewFrame();
@@ -137,11 +145,6 @@ void Game::render() {
 
 	ImGui::Render();
 	*/
-
-	shaderHandler->use("Shadow");
-	shadow->drawDepth();
-
-	glViewport(0, 0, width, height);
 
 	shaderHandler->use("Particles");
 	

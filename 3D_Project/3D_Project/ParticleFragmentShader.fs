@@ -4,9 +4,9 @@ out vec4 outColor;
 
 in vec2 uvCoord;
 
-uniform sampler2D tex;
-uniform sampler2D particle;
-uniform sampler2D depth;
+layout(binding=0)uniform sampler2D depth;
+layout(binding=1)uniform sampler2D tex;
+layout(binding=2)uniform sampler2D particle;
 
 void main(){
 	
